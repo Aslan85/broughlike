@@ -1,5 +1,7 @@
-let project = new Project('New Project');
+let project = new Project('BroughLike');
 project.addAssets('Assets/**');
-project.addShaders('Shaders/**');
 project.addSources('Sources');
+project.addShaders('Shaders/**');
+project.addLibrary('raccoon');
+project.addLibrary('delta');
 resolve(project);
