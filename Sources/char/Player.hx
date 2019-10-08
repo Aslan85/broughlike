@@ -8,16 +8,18 @@ import raccoon.anim.Animation;
 
 class Player extends Sprite
 {
-	public var animFlap:Animation;
+	//public var animFlap:Animation;
 	public var animIdle:Animation;
+	public var animDie:Animation;
 
-	var _tileSize = 20;
+	var _playerSize = 64;
 
 	public function new(x:Float, y:Float)
 	{
-		super('knight', x, y, 20, 20);
-		animFlap = Animation.createRange(0, 2, 4);
+		super('knight', x, y, _playerSize, _playerSize);
+		//animWalk = Animation.createRange(0, 2, 4);
 		animIdle = Animation.create(0);
+		animDie = Animation.create(1);
 
 		reset();
 	}
@@ -44,8 +46,8 @@ class Player extends Sprite
 			case D: x++;
 		default: return;
 		}
-		position.x += x *_tileSize;
-		position.y += y *_tileSize;
+		position.x += x *_playerSize;
+		position.y += y *_playerSize;
 	}
 
 	public function onKeyUp(keyCode:KeyCode):Void
@@ -61,7 +63,5 @@ class Player extends Sprite
 	{
 		flip.x = false;
 		setAnimation(animIdle);
-		position.x = Raccoon.BUFFERWIDTH / 2;
-		position.y = Raccoon.BUFFERHEIGHT / 2;
 	}
 }

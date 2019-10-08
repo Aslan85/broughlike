@@ -1,5 +1,7 @@
 package state;
 
+import kha.math.Random;
+import raccoon.tmx.TiledMap;
 import kha.Canvas;
 import kha.input.KeyCode;
 import kha.Assets;
@@ -9,20 +11,25 @@ import raccoon.State;
 
 import asset.ScoreManager;
 import char.Player;
+import world.Board;
 
 class PlayState extends State
 {
-	var _tileSize = 64;
-	var _numTiles = 9;
-	var _uiWidth = 4;
-	
-	public static var player:Player;
+	var _nbColums = 11;
+	var _nbRows = 11;
 
+	public static var board:Board;
+	public static var player:Player;
+	
 	public function new()
 	{
 		super();
+	
+		board = new Board(_nbRows, _nbColums);
+		board.generateLevel();
 
-		player = new Player(Raccoon.BUFFERWIDTH / 2, Raccoon.BUFFERHEIGHT / 2);
+		var startTile = board.randomPassableTile();
+		player = new Player(startTile.row *startTile.tileSize, startTile.column*startTile.tileSize);
 	}
 
 	override public function update()
@@ -36,6 +43,7 @@ class PlayState extends State
 	{
 		super.render(canvas);
 
+		board.render(canvas);
 		player.render(canvas);
 	}
 
