@@ -1,21 +1,24 @@
 package world;
 
-import raccoon.Object;
 import kha.Canvas;
 import kha.input.KeyCode;
 
+import raccoon.Object;
 import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 import raccoon.tool.Util;
 
 import world.BoardTile;
+import char.Monster;
 
 class Board extends Object
 {
 	var _nbRows:Int;
 	var _nbColums:Int;
 	var _tiles = new Array<Array<BoardTile>>();
+	
+	public var monsters = new Array<Monster>();
 
 	public function new(rows:Int, colums:Int)
 	{
@@ -89,8 +92,24 @@ class Board extends Object
 		do
 		{
 			t = getTile(Util.randomInt(_nbRows), Util.randomInt(_nbColums));
-		} while(!t.passable && !t.monster);
+		} while(!t.passable && t.monster == null);
 			
 		return t;
-	}	
+	}
+	
+	public function generateMonsters(level:Int)
+	{
+		var numMonsters = level+1;
+		for (i in 0...numMonsters)
+		{
+			spawnMonster();
+		}
+	}
+	
+	function spawnMonster()
+	{
+		//var monsterType = Bird;
+		var monster = new Bird(randomPassableTile());
+		monsters.push(monster);
+	}
 }

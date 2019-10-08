@@ -6,48 +6,26 @@ import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
-class Player extends Sprite
+import world.BoardTile;
+
+class Player extends Monster
 {
-	//public var animFlap:Animation;
-	public var animIdle:Animation;
-	public var animDie:Animation;
-
-	var _playerSize = 64;
-
-	public function new(x:Float, y:Float)
+	public function new(bT:BoardTile)
 	{
-		super('knight', x, y, _playerSize, _playerSize);
-		//animWalk = Animation.createRange(0, 2, 4);
-		animIdle = Animation.create(0);
-		animDie = Animation.create(1);
-
-		reset();
-	}
-
-	override public function update()
-	{
-		super.update();
-	}
-
-	override public function render(canvas:Canvas)
-	{
-		super.render(canvas);
+		super('knight', bT, 3);
+		isPlayer = true;
 	}
 
 	public function onKeyDown(keyCode:KeyCode):Void
 	{
-		var x = 0;
-		var y = 0;
 		switch (keyCode)
 		{
-			case W: y--;
-			case S: y++;
-			case A: x--;
-			case D: x++;
+			case W: tryMove(0, -1);
+			case S: tryMove(0, 1);
+			case A: tryMove(-1, 0);
+			case D: tryMove(1, 0);
 		default: return;
 		}
-		position.x += x *_playerSize;
-		position.y += y *_playerSize;
 	}
 
 	public function onKeyUp(keyCode:KeyCode):Void
@@ -57,11 +35,5 @@ class Player extends Sprite
 			//case F: flap = false;
 		default: return;
 		}
-	}
-
-	public function reset()
-	{
-		flip.x = false;
-		setAnimation(animIdle);
 	}
 }

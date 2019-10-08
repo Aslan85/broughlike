@@ -20,6 +20,7 @@ class PlayState extends State
 
 	public static var board:Board;
 	public static var player:Player;
+	public static var level:Int = 1;
 	
 	public function new()
 	{
@@ -27,16 +28,19 @@ class PlayState extends State
 	
 		board = new Board(_nbRows, _nbColums);
 		board.generateLevel();
+		board.generateMonsters(level);
 
-		var startTile = board.randomPassableTile();
-		player = new Player(startTile.row *startTile.tileSize, startTile.column*startTile.tileSize);
+		player = new Player(board.randomPassableTile());
 	}
 
 	override public function update()
 	{
 		super.update();
 
-		player.update();	
+		player.update();
+		for(m in board.monsters)
+			m.update();
+
 	}
 
 	override public function render(canvas:Canvas)
@@ -45,6 +49,8 @@ class PlayState extends State
 
 		board.render(canvas);
 		player.render(canvas);
+		for(m in board.monsters)
+			m.render(canvas);
 	}
 
 	override public function onKeyDown(keyCode:KeyCode):Void

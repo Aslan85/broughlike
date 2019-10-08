@@ -7,13 +7,15 @@ import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
+import char.Monster;
+
 class BoardTile extends Sprite
 {
 	public var tileSize = 64;
 	public var row:Int;
 	public var column:Int;
 	public var passable:Bool;
-	public var monster:Bool = false;
+	public var monster:Monster;
 	var _attachedBoard:Board;
 
 	public function new(sprite:String, b:Board, x:Int, y:Int, p:Bool)
@@ -36,7 +38,7 @@ class BoardTile extends Sprite
 		super.render(canvas);
 	}
 
-	function getNeighbor(dx, dy):BoardTile
+	public function getNeighbor(dx, dy):BoardTile
 	{
 		return _attachedBoard.getTile(row+dx, column+dy);
 	}
