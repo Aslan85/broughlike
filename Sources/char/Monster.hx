@@ -6,14 +6,16 @@ import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
+import state.PlayState;
 import world.BoardTile;
 
 class Monster extends Sprite
 {
 	public var hp:Int;
+	public var dead:Bool;
+	public var boardTile:BoardTile;
 	public var isPlayer:Bool = false;
-
-	var _boardTile:BoardTile;
+	
 	var _animIdle:Animation;
 	var _animDie:Animation;
 	var _spriteSize = 64;
@@ -23,8 +25,9 @@ class Monster extends Sprite
 		super(sprite, bT.row *_spriteSize, bT.column *_spriteSize, _spriteSize, _spriteSize);
 		
 		hp = h;
-		_boardTile = bT;
-		_boardTile.monster = this;
+		dead = false;
+		boardTile = bT;
+		boardTile.monster = this;
 
 		_animIdle = Animation.create(0);
 		_animDie = Animation.create(1);
@@ -34,6 +37,9 @@ class Monster extends Sprite
 	override public function update()
 	{
 		super.update();
+
+		if(!isPlayer)
+			doStuff();
 	}
 
 	override public function render(canvas:Canvas)
@@ -41,9 +47,21 @@ class Monster extends Sprite
 		super.render(canvas);
 	}
 
+	function doStuff()
+	{
+		var neighbors = boardTile.getAdjacentPassableNeighbors();
+		neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster.isPlayer));
+		if(neighbors.length > 0)
+		{
+			neighbors.sort(function(a, b) return Std.int(a.dist(PlayState.player.boardTile)) - Std.int(b.dist(PlayState.player.boardTile)));
+			var newTile = neighbors[0];
+			tryMove(newTile.row - boardTile.row, newTile.column - boardTile.column);
+		}
+	}
+
 	public function tryMove(dx, dy):Bool
 	{
-		var newTile = _boardTile.getNeighbor(dx,dy);
+		var newTile = boardTile.getNeighbor(dx,dy);
         if(newTile.passable)
 		{
             if(newTile.monster == null)
@@ -57,12 +75,12 @@ class Monster extends Sprite
 
     function move(tile:BoardTile):Void
 	{
-        _boardTile.monster = null;
+        boardTile.monster = null;
 
-        _boardTile = tile;
-        _boardTile.monster = this;
-		this.position.x = _boardTile.row * _spriteSize;
-		this.position.y = _boardTile.column * _spriteSize;
+        boardTile = tile;
+        boardTile.monster = this;
+		this.position.x = boardTile.row * _spriteSize;
+		this.position.y = boardTile.column * _spriteSize;
     }
 }
 

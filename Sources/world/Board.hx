@@ -108,8 +108,14 @@ class Board extends Object
 	
 	function spawnMonster()
 	{
-		//var monsterType = Bird;
-		var monster = new Bird(randomPassableTile());
-		monsters.push(monster);
+		switch(Util.randomInt(5))
+		{
+			case 0: var monster = new Bird(randomPassableTile()); monsters.push(monster);
+			case 1: var monster = new Crow(randomPassableTile()); monsters.push(monster);
+			case 2: var monster = new Rat(randomPassableTile()); monsters.push(monster);
+			case 3: var monster = new Troll(randomPassableTile()); monsters.push(monster);
+			case 4: var monster = new Dragon(randomPassableTile()); monsters.push(monster);
+		default : var monster = new Bird(randomPassableTile()); monsters.push(monster);
+		}	
 	}
 }

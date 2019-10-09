@@ -1,5 +1,7 @@
 package state;
 
+import utils.UtilFonctions;
+
 import kha.math.Random;
 import raccoon.tmx.TiledMap;
 import kha.Canvas;
@@ -8,6 +10,8 @@ import kha.Assets;
 
 import raccoon.Raccoon;
 import raccoon.State;
+
+import tween.Delta;
 
 import asset.ScoreManager;
 import char.Player;
@@ -38,9 +42,8 @@ class PlayState extends State
 		super.update();
 
 		player.update();
-		for(m in board.monsters)
-			m.update();
 
+		Delta.step(1/60);
 	}
 
 	override public function render(canvas:Canvas)
@@ -51,6 +54,21 @@ class PlayState extends State
 		player.render(canvas);
 		for(m in board.monsters)
 			m.render(canvas);
+	}
+
+	public static function tick():Void
+	{
+		for(i in new ReverseIterator(board.monsters.length-1,0))
+		{
+			if(!board.monsters[i].dead)
+			{
+				board.monsters[i].update();
+			}
+			else
+			{
+				board.monsters.splice(i, 1);
+			}
+		}
 	}
 
 	override public function onKeyDown(keyCode:KeyCode):Void

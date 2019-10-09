@@ -38,6 +38,11 @@ class BoardTile extends Sprite
 		super.render(canvas);
 	}
 
+	public function dist(other:BoardTile):Float
+	{
+        return Math.abs(row-other.row) + Math.abs(column-other.column);
+    }
+
 	public function getNeighbor(dx, dy):BoardTile
 	{
 		return _attachedBoard.getTile(row+dx, column+dy);
@@ -50,7 +55,7 @@ class BoardTile extends Sprite
 		return adjacentTiles;
 	}
 
-	function getAdjacentPassableNeighbors():Array<BoardTile>
+	public function getAdjacentPassableNeighbors():Array<BoardTile>
 	{
 		return getAdjacentNeighbors().filter(function (t) return t.passable);
 	}

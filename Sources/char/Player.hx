@@ -6,6 +6,7 @@ import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
+import state.PlayState;
 import world.BoardTile;
 
 class Player extends Monster
@@ -20,10 +21,10 @@ class Player extends Monster
 	{
 		switch (keyCode)
 		{
-			case W: tryMove(0, -1);
-			case S: tryMove(0, 1);
-			case A: tryMove(-1, 0);
-			case D: tryMove(1, 0);
+			case W: tryMove(0, -1); PlayState.tick();
+			case S: tryMove(0, 1); PlayState.tick();
+			case A: tryMove(-1, 0); PlayState.tick();
+			case D: tryMove(1, 0); PlayState.tick();
 		default: return;
 		}
 	}
