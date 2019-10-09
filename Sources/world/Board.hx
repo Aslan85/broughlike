@@ -9,6 +9,7 @@ import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 import raccoon.tool.Util;
 
+import state.PlayState;
 import world.BoardTile;
 import char.Monster;
 
@@ -73,7 +74,7 @@ class Board extends Object
 		return passableTiles;
 	}
 
-	function inBounds(x:Int, y:Int):Bool
+	public function inBounds(x:Int, y:Int):Bool
 	{
 		return x>0 && y>0 && x < _nbRows-1 && y < _nbColums-1;
 	}
@@ -84,6 +85,11 @@ class Board extends Object
 			return _tiles[x][y];
     	else
 			return new Wall(this, x, y);
+	}
+
+	public function replaceByFloor(who:BoardTile):Void
+	{
+		_tiles[who.row][who.column] = new Floor(PlayState.board, who.row, who.column);
 	}
 
 	public function randomPassableTile():BoardTile
@@ -108,6 +114,7 @@ class Board extends Object
 	
 	function spawnMonster()
 	{
+		/*
 		switch(Util.randomInt(5))
 		{
 			case 0: var monster = new Bird(randomPassableTile()); monsters.push(monster);
@@ -116,6 +123,8 @@ class Board extends Object
 			case 3: var monster = new Troll(randomPassableTile()); monsters.push(monster);
 			case 4: var monster = new Dragon(randomPassableTile()); monsters.push(monster);
 		default : var monster = new Bird(randomPassableTile()); monsters.push(monster);
-		}	
+		}
+		*/
+		var monster = new Rat(randomPassableTile()); monsters.push(monster);
 	}
 }

@@ -2,6 +2,7 @@ package char;
 
 import kha.Canvas;
 import kha.input.KeyCode;
+
 import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
@@ -21,10 +22,10 @@ class Player extends Monster
 	{
 		switch (keyCode)
 		{
-			case W: tryMove(0, -1); PlayState.tick();
-			case S: tryMove(0, 1); PlayState.tick();
-			case A: tryMove(-1, 0); PlayState.tick();
-			case D: tryMove(1, 0); PlayState.tick();
+			case W: if(!dead) { tryMove(0, -1); PlayState.tick(); }
+			case S: if(!dead) { tryMove(0, 1); PlayState.tick(); }
+			case A: if(!dead) { tryMove(-1, 0); PlayState.tick(); }
+			case D: if(!dead) { tryMove(1, 0); PlayState.tick(); }
 		default: return;
 		}
 	}

@@ -7,6 +7,7 @@ import raccoon.Raccoon;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
+import state.PlayState;
 import char.Monster;
 
 class BoardTile extends Sprite
@@ -58,6 +59,11 @@ class BoardTile extends Sprite
 	public function getAdjacentPassableNeighbors():Array<BoardTile>
 	{
 		return getAdjacentNeighbors().filter(function (t) return t.passable);
+	}
+
+	public function getAdjacentNonPassableNeighbors():Array<BoardTile>
+	{
+		return getAdjacentNeighbors().filter(function (t) return !t.passable && PlayState.board.inBounds(t.row, t.column));
 	}
 
 	public function getConnectedTiles():Array<BoardTile>
