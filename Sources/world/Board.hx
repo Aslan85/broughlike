@@ -114,7 +114,6 @@ class Board extends Object
 	
 	function spawnMonster()
 	{
-		/*
 		switch(Util.randomInt(5))
 		{
 			case 0: var monster = new Bird(randomPassableTile()); monsters.push(monster);
@@ -124,7 +123,5 @@ class Board extends Object
 			case 4: var monster = new Dragon(randomPassableTile()); monsters.push(monster);
 		default : var monster = new Bird(randomPassableTile()); monsters.push(monster);
 		}
-		*/
-		var monster = new Rat(randomPassableTile()); monsters.push(monster);
 	}
 }
