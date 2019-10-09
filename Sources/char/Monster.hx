@@ -4,6 +4,7 @@ import kha.Canvas;
 import kha.input.KeyCode;
 
 import raccoon.Raccoon;
+import raccoon.State;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 import raccoon.tool.Util;
@@ -17,39 +18,50 @@ class Monster extends Sprite
 	public var isPlayer:Bool = false;
 	public var hp:Float;
 	public var dead:Bool = false;
-	public var stunned:Bool = false;
 	public var boardTile:BoardTile;
 	
+	var _playState:PlayState;
 	var _maxHp:Float = 6;
 	var _animIdle:Animation;
 	var _animDie:Animation;
+	var _animWarp:Animation;
 	var _spriteSize = 64;
 	var _lifes = new List<Life>();
 
 	var _attackedThisTurn:Bool = false;
+	var _stunned:Bool = false;
+	var _warpCounter:Int = 2;
 
-	public function new(sprite:String, bT:BoardTile, h:Int)
+	public function new(sprite:String, bT:BoardTile, h:Int, ps:PlayState)
 	{
 		super(sprite, bT.row *_spriteSize, bT.column *_spriteSize, _spriteSize, _spriteSize);
-		
+			
 		hp = h;
 		dead = false;
+		_playState = ps;
 		boardTile = bT;
 		boardTile.monster = this;
 
 		_animIdle = Animation.create(0);
-		_animDie = Animation.create(1);
-		setAnimation(_animIdle);
+		_animWarp = Animation.create(1);
+		_animDie = Animation.create(2);
+		setAnimation(_animWarp);
 	}
 
 	override public function update()
 	{
 		super.update();
 
-		if(stunned)
+		_warpCounter--;
+		if(_stunned || _warpCounter > 0)
 		{
-			stunned = false;
+			_stunned = false;
 			return;
+		}
+		else
+		{
+			if(!dead)
+				setAnimation(_animIdle);
 		}
 
 		if(!isPlayer)
@@ -59,7 +71,7 @@ class Monster extends Sprite
 	override public function render(canvas:Canvas)
 	{
 		super.render(canvas);
-		drawHp();
+		if(_warpCounter <= 0) drawHp();
 		for(l in _lifes)
 			l.render(canvas);
 	}
@@ -80,7 +92,7 @@ class Monster extends Sprite
 		neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster.isPlayer));
 		if(neighbors.length > 0)
 		{
-			neighbors.sort(function(a, b) return Std.int(a.dist(PlayState.player.boardTile)) - Std.int(b.dist(PlayState.player.boardTile)));
+			neighbors.sort(function(a, b) return Std.int(a.dist(_playState.player.boardTile)) - Std.int(b.dist(_playState.player.boardTile)));
 			var newTile = neighbors[0];
 			tryMove(newTile.row - boardTile.row, newTile.column - boardTile.column);
 		}
@@ -100,7 +112,7 @@ class Monster extends Sprite
 				if(isPlayer != newTile.monster.isPlayer)
 				{
 					_attackedThisTurn = true;
-					newTile.monster.stunned = true;
+					newTile.monster._stunned = true;
 					newTile.monster.hit(1);
 				}
 			}
@@ -116,6 +128,9 @@ class Monster extends Sprite
 
 	public function hit(damage:Float):Void
 	{
+		if(_warpCounter > 0)
+			return;
+
 		hp -= damage;
 		if(hp <= 0)
 			die();
@@ -136,22 +151,47 @@ class Monster extends Sprite
         boardTile.monster = this;
 		this.position.x = boardTile.row * _spriteSize;
 		this.position.y = boardTile.column * _spriteSize;
+
+		stepOn();
     }
+
+	function stepOn():Void
+	{
+		if(boardTile.isExit)
+		{
+			if(isPlayer)
+			{
+				if(_playState.level == _playState.maxLevel)
+				{
+					State.set('win');
+				}
+				else
+				{
+					_playState.level++;
+					_playState.startLevel(Std.int(Math.min(_maxHp, hp+1)));
+				}
+			}
+			else 
+			{
+				//TODO : Exit for monster
+			}
+		}
+	}
 }
 
 class Bird extends Monster
 {
-	public function new(bT:BoardTile)
+	public function new(bT:BoardTile, ps:PlayState)
 	{
-		super('bird', bT, 1);
+		super('bird', bT, 1, ps);
 	}
 }
 
 class Crow extends Monster
 {
-	public function new(bT:BoardTile)
+	public function new(bT:BoardTile, ps:PlayState)
 	{
-		super('crow', bT, 2);
+		super('crow', bT, 2, ps);
 	}
 
 	override public function doStuff():Void
@@ -166,9 +206,9 @@ class Crow extends Monster
 
 class Rat extends Monster
 {
-	public function new(bT:BoardTile)
+	public function new(bT:BoardTile, ps:PlayState)
 	{
-		super('rat', bT, 2);
+		super('rat', bT, 2, ps);
 	}
 
 	override public function doStuff():Void
@@ -184,36 +224,36 @@ class Rat extends Monster
 
 class Troll extends Monster
 {
-	public function new(bT:BoardTile)
+	public function new(bT:BoardTile, ps:PlayState)
 	{
-		super('troll', bT, 3);
+		super('troll', bT, 3, ps);
 	}
 
 	override public function update()
 	{
-		var startStunned = stunned;
+		var startStunned = _stunned;
 		super.update();
 
 		if(!startStunned)
 		{
-			stunned = true;
+			_stunned = true;
 		}
 	}
 }
 
 class Dragon extends Monster
 {
-	public function new(bT:BoardTile)
+	public function new(bT:BoardTile, ps:PlayState)
 	{
-		super('dragon', bT, 3);
+		super('dragon', bT, 3, ps);
 	}
 
 	override public function doStuff():Void
 	{
-		var neighbors = boardTile.getAdjacentNonPassableNeighbors();
+		var neighbors = boardTile.getAdjacentNeighbors().filter(function (t) return !t.passable && _playState.board.inBounds(t.row, t.column));
 		if(neighbors.length > 0)
 		{
-			PlayState.board.replaceByFloor(neighbors[0]);
+			_playState.board.replaceByFloor(neighbors[0]);
 			heal(0.5);
 		}
 		else 

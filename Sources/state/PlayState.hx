@@ -21,20 +21,19 @@ class PlayState extends State
 {
 	var _nbColums = 11;
 	var _nbRows = 11;
+	var _startingPlayerHp = 3;
+	var _spawnRate:Int;
+	var _spawnCounter:Int;
 
-	public static var board:Board;
-	public static var player:Player;
-	public static var level:Int = 1;
+	public var board:Board;
+	public var player:Player;
+	public var level:Int = 1;
+	public var maxLevel:Int = 6;
 	
 	public function new()
 	{
 		super();
-	
-		board = new Board(_nbRows, _nbColums);
-		board.generateLevel();
-		board.generateMonsters(level);
-
-		player = new Player(board.randomPassableTile());
+		startLevel(_startingPlayerHp);
 	}
 
 	override public function update()
@@ -56,7 +55,21 @@ class PlayState extends State
 			m.render(canvas);
 	}
 
-	public static function tick():Void
+	public function startLevel(hpPlayer:Int):Void
+	{
+		_spawnRate = 15;
+		_spawnCounter = _spawnRate;
+	
+		board = new Board(_nbRows, _nbColums, this);
+		board.generateLevel();
+		player = new Player(board.randomPassableTile(), hpPlayer, this);
+		board.generateMonsters(level);
+
+		var exitTile = board.randomPassableTile();
+		board.replaceByExit(exitTile);
+	}
+
+	public function tick():Void
 	{
 		for(i in new ReverseIterator(board.monsters.length-1,0))
 		{
@@ -69,6 +82,18 @@ class PlayState extends State
 				board.monsters.splice(i, 1);
 			}
 		}
+		spawnCounter();
+	}
+
+	public function spawnCounter():Void
+	{
+		_spawnCounter--;
+		if(_spawnCounter <= 0)
+		{
+			board.spawnMonster();
+			_spawnCounter = _spawnRate;
+			_spawnRate--;
+		}
 	}
 
 	override public function onKeyDown(keyCode:KeyCode):Void
@@ -76,7 +101,7 @@ class PlayState extends State
 		player.onKeyDown(keyCode);
 		switch (keyCode)
 		{
-			//case F: setRunState();
+			case R: if(player.dead) State.set('retry');
 		default: return;
 		}
 	}

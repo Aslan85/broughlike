@@ -4,6 +4,7 @@ import kha.Canvas;
 import kha.input.KeyCode;
 
 import raccoon.Raccoon;
+import raccoon.State;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 
@@ -17,6 +18,7 @@ class BoardTile extends Sprite
 	public var column:Int;
 	public var passable:Bool;
 	public var monster:Monster;
+	public var isExit:Bool = false;
 	var _attachedBoard:Board;
 
 	public function new(sprite:String, b:Board, x:Int, y:Int, p:Bool)
@@ -49,7 +51,7 @@ class BoardTile extends Sprite
 		return _attachedBoard.getTile(row+dx, column+dy);
 	}
 
-	function getAdjacentNeighbors():Array<BoardTile>
+	public function getAdjacentNeighbors():Array<BoardTile>
 	{
 		var adjacentTiles = new Array<BoardTile>();
 		adjacentTiles = [getNeighbor(0, -1), getNeighbor(0, 1), getNeighbor(-1, 0), getNeighbor(1, 0)];
@@ -59,11 +61,6 @@ class BoardTile extends Sprite
 	public function getAdjacentPassableNeighbors():Array<BoardTile>
 	{
 		return getAdjacentNeighbors().filter(function (t) return t.passable);
-	}
-
-	public function getAdjacentNonPassableNeighbors():Array<BoardTile>
-	{
-		return getAdjacentNeighbors().filter(function (t) return !t.passable && PlayState.board.inBounds(t.row, t.column));
 	}
 
 	public function getConnectedTiles():Array<BoardTile>
@@ -95,6 +92,15 @@ class Floor extends BoardTile
 	public function new(b:Board, x:Int, y:Int)
 	{
 		super('floorTile', b, x, y, true);
+	}
+}
+
+class Exit extends BoardTile
+{
+	public function new(b:Board, x:Int, y:Int)
+	{
+		super('exitTile', b, x, y, true);
+		isExit = true;
 	}
 }
 
