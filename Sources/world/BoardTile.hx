@@ -17,8 +17,9 @@ class BoardTile extends Sprite
 	public var row:Int;
 	public var column:Int;
 	public var passable:Bool;
-	public var monster:Monster;
+	public var monster:Monster = null;
 	public var isExit:Bool = false;
+	public var isTreasure:Bool = false;
 	var _attachedBoard:Board;
 
 	public function new(sprite:String, b:Board, x:Int, y:Int, p:Bool)
@@ -101,6 +102,15 @@ class Exit extends BoardTile
 	{
 		super('exitTile', b, x, y, true);
 		isExit = true;
+	}
+}
+
+class Treasure extends BoardTile
+{
+	public function new(b:Board, x:Int, y:Int)
+	{
+		super('treasureTile', b, x, y, true);
+		isTreasure = true;
 	}
 }
 

@@ -99,13 +99,18 @@ class Board extends Object
 		_tiles[who.row][who.column] = new Exit(_playState.board, who.row, who.column);
 	}
 
+	public function replaceByTreasure(who:BoardTile):Void
+	{
+		_tiles[who.row][who.column] = new Treasure(_playState.board, who.row, who.column);
+	}
+
 	public function randomPassableTile():BoardTile
 	{
 		var t:BoardTile;
 		do
 		{
 			t = getTile(Util.randomInt(_nbRows), Util.randomInt(_nbColums));
-		} while(!t.passable && t.monster == null);
+		} while(!t.passable || t.monster != null);
 			
 		return t;
 	}

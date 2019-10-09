@@ -12,7 +12,7 @@ class ScoreManager extends Entity
 
 	public function new(x:Float, y:Float, size:Int)
 	{
-		text = new Text('_8bit', '' +score, x, y, size);
+		text = new Text('_8bit', 'Score: ' +score, x, y, size);
 
 		super(x, y, text.font.width(size, text.string), text.font.height(size));
 	}
@@ -23,7 +23,7 @@ class ScoreManager extends Entity
 		text.position.x = position.x;
 		text.position.y = position.y;
 
-		text.string = '' +score;
+		text.string = 'Score: ' +score;
 	}
 
 	override public function render(canvas:Canvas)

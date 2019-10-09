@@ -18,6 +18,6 @@ class Project extends App
 		State.addState('option', new OptionState());
 		State.addState('retry', new RetryState());
 		State.addState('win', new RetryState());
-		State.set('menu');
+		State.set('play');
 	}
 }

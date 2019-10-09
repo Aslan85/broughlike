@@ -157,9 +157,9 @@ class Monster extends Sprite
 
 	function stepOn():Void
 	{
-		if(boardTile.isExit)
+		if(isPlayer)
 		{
-			if(isPlayer)
+			if(boardTile.isExit)
 			{
 				if(_playState.level == _playState.maxLevel)
 				{
@@ -171,9 +171,10 @@ class Monster extends Sprite
 					_playState.startLevel(Std.int(Math.min(_maxHp, hp+1)));
 				}
 			}
-			else 
+			if(boardTile.isTreasure)
 			{
-				//TODO : Exit for monster
+				_playState.score.up(1);
+				_playState.board.replaceByFloor(boardTile);
 			}
 		}
 	}

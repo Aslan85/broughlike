@@ -29,30 +29,34 @@ class PlayState extends State
 	public var player:Player;
 	public var level:Int = 1;
 	public var maxLevel:Int = 6;
+	public var score:ScoreManager;
 	
 	public function new()
 	{
 		super();
 		startLevel(_startingPlayerHp);
+		
+		score = new ScoreManager(720, 18, 48);
+		add(score);
 	}
 
 	override public function update()
 	{
 		super.update();
-
 		player.update();
+		score.update();
 
 		Delta.step(1/60);
 	}
 
 	override public function render(canvas:Canvas)
 	{
-		super.render(canvas);
-
 		board.render(canvas);
-		player.render(canvas);
 		for(m in board.monsters)
 			m.render(canvas);
+		player.render(canvas);
+
+		super.render(canvas);
 	}
 
 	public function startLevel(hpPlayer:Int):Void
@@ -60,13 +64,26 @@ class PlayState extends State
 		_spawnRate = 15;
 		_spawnCounter = _spawnRate;
 	
+		// Init board
 		board = new Board(_nbRows, _nbColums, this);
 		board.generateLevel();
+
+		// Add player
 		player = new Player(board.randomPassableTile(), hpPlayer, this);
+
+		// Add monsters
 		board.generateMonsters(level);
 
+		// Add exit
 		var exitTile = board.randomPassableTile();
 		board.replaceByExit(exitTile);
+
+		// Add Treasures
+		for(i in 0...3)
+		{
+			var treasureTile = board.randomPassableTile();
+			board.replaceByTreasure(treasureTile);
+		}
 	}
 
 	public function tick():Void
