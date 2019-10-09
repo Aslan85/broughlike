@@ -4,6 +4,7 @@ import kha.Canvas;
 import kha.input.KeyCode;
 
 import raccoon.Raccoon;
+import raccoon.State;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 

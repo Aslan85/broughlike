@@ -24,6 +24,7 @@ class Monster extends Sprite
 	var _animIdle:Animation;
 	var _animDie:Animation;
 	var _spriteSize = 64;
+	var _lifes = new List<Life>();
 
 	var _attackedThisTurn:Bool = false;
 
@@ -58,6 +59,19 @@ class Monster extends Sprite
 	override public function render(canvas:Canvas)
 	{
 		super.render(canvas);
+		drawHp();
+		for(l in _lifes)
+			l.render(canvas);
+	}
+
+	function drawHp()
+	{
+		_lifes.clear();
+		for(i in 0 ... Std.int(hp))
+		{
+			var l = new Life((boardTile.row*_spriteSize) + (i%3)*(5/16)*_spriteSize, (boardTile.column*_spriteSize) -Math.floor(i/3)*(5/16)*_spriteSize);
+			_lifes.add(l);
+		}
 	}
 
 	public function doStuff():Void
@@ -197,7 +211,7 @@ class Dragon extends Monster
 	override public function doStuff():Void
 	{
 		var neighbors = boardTile.getAdjacentNonPassableNeighbors();
-		if(neighbors.length > 0 && hp < _maxHp)
+		if(neighbors.length > 0)
 		{
 			PlayState.board.replaceByFloor(neighbors[0]);
 			heal(0.5);
@@ -206,6 +220,19 @@ class Dragon extends Monster
 		{
 			super.doStuff();
 		}
+	}
+}
+
+class Life extends  Sprite
+{
+	public function new(x:Float, y:Float)
+	{
+		super('life', x, y, 64, 64);
+	}
+
+	override public function render(canvas:Canvas)
+	{
+		super.render(canvas);
 	}
 }
 
