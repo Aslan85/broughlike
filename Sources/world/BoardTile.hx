@@ -13,18 +13,21 @@ import char.Monster;
 
 class BoardTile extends Sprite
 {
-	public var tileSize = 64;
 	public var row:Int;
 	public var column:Int;
 	public var passable:Bool;
 	public var monster:Monster = null;
 	public var isExit:Bool = false;
 	public var isTreasure:Bool = false;
+
+	var _tileSize = 64;
+	var _spriteSize = 16;
 	var _attachedBoard:Board;
 
 	public function new(sprite:String, b:Board, x:Int, y:Int, p:Bool)
 	{
-		super(sprite, x*tileSize, y*tileSize, tileSize, tileSize);
+		super(sprite, x*_tileSize, y*_tileSize, _spriteSize, _spriteSize);
+		setScale(4, 4);
 
 		_attachedBoard = b;
 		row = x;

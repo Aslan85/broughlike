@@ -25,7 +25,8 @@ class Monster extends Sprite
 	var _animIdle:Animation;
 	var _animDie:Animation;
 	var _animWarp:Animation;
-	var _spriteSize = 64;
+	var _tileSize = 64;
+	var _spriteSize = 16;
 	var _lifes = new List<Life>();
 
 	var _attackedThisTurn:Bool = false;
@@ -34,8 +35,9 @@ class Monster extends Sprite
 
 	public function new(sprite:String, bT:BoardTile, h:Int, ps:PlayState)
 	{
-		super(sprite, bT.row *_spriteSize, bT.column *_spriteSize, _spriteSize, _spriteSize);
-			
+		super(sprite, bT.row *_tileSize, bT.column *_tileSize, _spriteSize, _spriteSize);
+		setScale(4.0, 4.0);
+
 		hp = h;
 		dead = false;
 		_playState = ps;
@@ -43,9 +45,8 @@ class Monster extends Sprite
 		boardTile.monster = this;
 
 		_animIdle = Animation.create(0);
-		_animWarp = Animation.create(1);
-		_animDie = Animation.create(2);
-		setAnimation(_animWarp);
+		_animDie = Animation.create(1);
+		setAnimation(_animIdle);
 	}
 
 	override public function update()
@@ -81,7 +82,7 @@ class Monster extends Sprite
 		_lifes.clear();
 		for(i in 0 ... Std.int(hp))
 		{
-			var l = new Life((boardTile.row*_spriteSize) + (i%3)*(5/16)*_spriteSize, (boardTile.column*_spriteSize) -Math.floor(i/3)*(5/16)*_spriteSize);
+			var l = new Life((boardTile.row*_tileSize) + (i%3)*(5/16)*_tileSize, (boardTile.column*_tileSize) -Math.floor(i/3)*(5/16)*_tileSize);
 			_lifes.add(l);
 		}
 	}
@@ -149,8 +150,8 @@ class Monster extends Sprite
 
         boardTile = tile;
         boardTile.monster = this;
-		this.position.x = boardTile.row * _spriteSize;
-		this.position.y = boardTile.column * _spriteSize;
+		this.position.x = boardTile.row * _tileSize;
+		this.position.y = boardTile.column * _tileSize;
 
 		stepOn();
     }
