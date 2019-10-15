@@ -18,16 +18,14 @@ class Board extends Object
 	var _nbRows:Int;
 	var _nbColums:Int;
 	var _tiles = new Array<Array<BoardTile>>();
-	var _playState:PlayState;
 	
 	public var monsters = new Array<Monster>();
 
-	public function new(rows:Int, colums:Int, ps:PlayState)
+	public function new(rows:Int, colums:Int)
 	{
 		super();
 		_nbRows = rows;
 		_nbColums = colums;
-		_playState = ps;
 	}
 
 	override public function update()
@@ -91,17 +89,17 @@ class Board extends Object
 
 	public function replaceByFloor(who:BoardTile):Void
 	{
-		_tiles[who.row][who.column] = new Floor(_playState.board, who.row, who.column);
+		_tiles[who.row][who.column] = new Floor(PlayState.board, who.row, who.column);
 	}
 
 	public function replaceByExit(who:BoardTile):Void
 	{
-		_tiles[who.row][who.column] = new Exit(_playState.board, who.row, who.column);
+		_tiles[who.row][who.column] = new Exit(PlayState.board, who.row, who.column);
 	}
 
 	public function replaceByTreasure(who:BoardTile):Void
 	{
-		_tiles[who.row][who.column] = new Treasure(_playState.board, who.row, who.column);
+		_tiles[who.row][who.column] = new Treasure(PlayState.board, who.row, who.column);
 	}
 
 	public function randomPassableTile():BoardTile
@@ -110,7 +108,7 @@ class Board extends Object
 		do
 		{
 			t = getTile(Util.randomInt(_nbRows), Util.randomInt(_nbColums));
-		} while(!t.passable || t.monster != null);
+		} while(!t.passable || t.monster != null || t.isTreasure || t.isExit);
 			
 		return t;
 	}
@@ -128,12 +126,12 @@ class Board extends Object
 	{
 		switch(Util.randomInt(5))
 		{
-			case 0: var monster = new Bird(randomPassableTile(), _playState); monsters.push(monster);
-			case 1: var monster = new Crow(randomPassableTile(), _playState); monsters.push(monster);
-			case 2: var monster = new Rat(randomPassableTile(), _playState); monsters.push(monster);
-			case 3: var monster = new Troll(randomPassableTile(), _playState); monsters.push(monster);
-			case 4: var monster = new Dragon(randomPassableTile(), _playState); monsters.push(monster);
-		default : var monster = new Bird(randomPassableTile(), _playState); monsters.push(monster);
+			case 0: var monster = new Bird(randomPassableTile()); monsters.push(monster);
+			case 1: var monster = new Crow(randomPassableTile()); monsters.push(monster);
+			case 2: var monster = new Rat(randomPassableTile()); monsters.push(monster);
+			case 3: var monster = new Troll(randomPassableTile()); monsters.push(monster);
+			case 4: var monster = new Dragon(randomPassableTile()); monsters.push(monster);
+		default : var monster = new Bird(randomPassableTile()); monsters.push(monster);
 		}
 	}
 }

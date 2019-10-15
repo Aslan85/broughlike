@@ -13,9 +13,9 @@ import world.BoardTile;
 
 class Player extends Monster
 {
-	public function new(bT:BoardTile, hp:Int, ps:PlayState)
+	public function new(bT:BoardTile, hp:Int)
 	{
-		super('knight', bT, hp, ps);
+		super('knight', bT, hp);
 		_warpCounter = 0;
 		isPlayer = true;
 	}
@@ -24,10 +24,10 @@ class Player extends Monster
 	{
 		switch (keyCode)
 		{
-			case W: if(!dead) { tryMove(0, -1); _playState.tick(); }
-			case S: if(!dead) { tryMove(0, 1); _playState.tick(); }
-			case A: if(!dead) { tryMove(-1, 0); _playState.tick(); }
-			case D: if(!dead) { tryMove(1, 0); _playState.tick(); }
+			case W: if(!dead) { tryMove(0, -1); PlayState.tick(); }
+			case S: if(!dead) { tryMove(0, 1); PlayState.tick(); }
+			case A: if(!dead) { tryMove(-1, 0); PlayState.tick(); }
+			case D: if(!dead) { tryMove(1, 0); PlayState.tick(); }
 		default: return;
 		}
 	}
@@ -39,5 +39,12 @@ class Player extends Monster
 			//case F: flap = false;
 		default: return;
 		}
+	}
+
+	public function reset()
+	{
+		hp = 3;
+		dead = false;
+		setAnimation(_animIdle);
 	}
 }

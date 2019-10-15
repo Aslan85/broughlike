@@ -10,6 +10,7 @@ import kha.Assets;
 import raccoon.Raccoon;
 import raccoon.State;
 import raccoon.tmx.TiledMap;
+import raccoon.ui.Text;
 
 import tween.Delta;
 
@@ -19,25 +20,32 @@ import world.Board;
 
 class PlayState extends State
 {
-	var _nbColums = 11;
-	var _nbRows = 11;
-	var _startingPlayerHp = 3;
-	var _spawnRate:Int;
-	var _spawnCounter:Int;
+	public static var nbColums = 11;
+	public static var nbRows = 11;
+	
+	public static var spawnRate:Int;
+	public static var spawnCounter:Int;
 
-	public var board:Board;
-	public var player:Player;
-	public var level:Int = 1;
-	public var maxLevel:Int = 6;
-	public var score:ScoreManager;
+	public static var board:Board;
+	public static var player:Player;
+	public static var level:Int = 1;
+	public static var maxLevel:Int = 6;
+	public static var startingPlayerHp = 3;
+
+	public static var score:ScoreManager;
+
+	var txtLevel:Text;
 	
 	public function new()
 	{
 		super();
-		startLevel(_startingPlayerHp);
+		startLevel(startingPlayerHp);
 		
 		score = new ScoreManager(720, 18, 48);
 		add(score);
+
+		txtLevel = new Text('_8bit', 'Level: ' +level, score.position.x, score.position.y + score.text.size, 48);
+		add(txtLevel);
 	}
 
 	override public function update()
@@ -45,6 +53,11 @@ class PlayState extends State
 		super.update();
 		player.update();
 		score.update();
+
+		if(level == maxLevel)
+			txtLevel.string = 'Last level';
+		else
+			txtLevel.string = 'Level: ' +level;
 
 		Delta.step(1/60);
 	}
@@ -59,17 +72,17 @@ class PlayState extends State
 		super.render(canvas);
 	}
 
-	public function startLevel(hpPlayer:Int):Void
+	public static function startLevel(hpPlayer:Int):Void
 	{
-		_spawnRate = 15;
-		_spawnCounter = _spawnRate;
+		spawnRate = 15;
+		spawnCounter = spawnRate;
 	
 		// Init board
-		board = new Board(_nbRows, _nbColums, this);
+		board = new Board(nbRows, nbColums);
 		board.generateLevel();
 
 		// Add player
-		player = new Player(board.randomPassableTile(), hpPlayer, this);
+		player = new Player(board.randomPassableTile(), hpPlayer);
 
 		// Add monsters
 		board.generateMonsters(level);
@@ -86,7 +99,7 @@ class PlayState extends State
 		}
 	}
 
-	public function tick():Void
+	public static function tick():Void
 	{
 		for(i in new ReverseIterator(board.monsters.length-1,0))
 		{
@@ -99,17 +112,17 @@ class PlayState extends State
 				board.monsters.splice(i, 1);
 			}
 		}
-		spawnCounter();
+		spawn();
 	}
 
-	public function spawnCounter():Void
+	public static function spawn():Void
 	{
-		_spawnCounter--;
-		if(_spawnCounter <= 0)
+		spawnCounter--;
+		if(spawnCounter <= 0)
 		{
 			board.spawnMonster();
-			_spawnCounter = _spawnRate;
-			_spawnRate--;
+			spawnCounter = spawnRate;
+			spawnRate--;
 		}
 	}
 
@@ -126,5 +139,12 @@ class PlayState extends State
 	override public function onKeyUp(keyCode:KeyCode):Void
 	{
 		player.onKeyUp(keyCode);
+	}
+
+	public static function reset()
+	{
+		level = 1;
+		player.reset();
+		startLevel(startingPlayerHp);
 	}
 }

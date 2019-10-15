@@ -20,7 +20,6 @@ class Monster extends Sprite
 	public var dead:Bool = false;
 	public var boardTile:BoardTile;
 	
-	var _playState:PlayState;
 	var _maxHp:Float = 6;
 	var _animIdle:Animation;
 	var _animDie:Animation;
@@ -33,14 +32,13 @@ class Monster extends Sprite
 	var _stunned:Bool = false;
 	var _warpCounter:Int = 2;
 
-	public function new(sprite:String, bT:BoardTile, h:Int, ps:PlayState)
+	public function new(sprite:String, bT:BoardTile, h:Int)
 	{
 		super(sprite, bT.row *_tileSize, bT.column *_tileSize, _spriteSize, _spriteSize);
 		setScale(4.0, 4.0);
 
 		hp = h;
 		dead = false;
-		_playState = ps;
 		boardTile = bT;
 		boardTile.monster = this;
 
@@ -93,7 +91,7 @@ class Monster extends Sprite
 		neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster.isPlayer));
 		if(neighbors.length > 0)
 		{
-			neighbors.sort(function(a, b) return Std.int(a.dist(_playState.player.boardTile)) - Std.int(b.dist(_playState.player.boardTile)));
+			neighbors.sort(function(a, b) return Std.int(a.dist(PlayState.player.boardTile)) - Std.int(b.dist(PlayState.player.boardTile)));
 			var newTile = neighbors[0];
 			tryMove(newTile.row - boardTile.row, newTile.column - boardTile.column);
 		}
@@ -162,20 +160,20 @@ class Monster extends Sprite
 		{
 			if(boardTile.isExit)
 			{
-				if(_playState.level == _playState.maxLevel)
+				if(PlayState.level == PlayState.maxLevel)
 				{
 					State.set('win');
 				}
 				else
 				{
-					_playState.level++;
-					_playState.startLevel(Std.int(Math.min(_maxHp, hp+1)));
+					PlayState.level++;
+					PlayState.startLevel(Std.int(Math.min(_maxHp, hp+1)));
 				}
 			}
 			if(boardTile.isTreasure)
 			{
-				_playState.score.up(1);
-				_playState.board.replaceByFloor(boardTile);
+				PlayState.score.up(1);
+				PlayState.board.replaceByFloor(boardTile);
 			}
 		}
 	}
@@ -183,17 +181,17 @@ class Monster extends Sprite
 
 class Bird extends Monster
 {
-	public function new(bT:BoardTile, ps:PlayState)
+	public function new(bT:BoardTile)
 	{
-		super('bird', bT, 1, ps);
+		super('bird', bT, 1);
 	}
 }
 
 class Crow extends Monster
 {
-	public function new(bT:BoardTile, ps:PlayState)
+	public function new(bT:BoardTile)
 	{
-		super('crow', bT, 2, ps);
+		super('crow', bT, 2);
 	}
 
 	override public function doStuff():Void
@@ -208,9 +206,9 @@ class Crow extends Monster
 
 class Rat extends Monster
 {
-	public function new(bT:BoardTile, ps:PlayState)
+	public function new(bT:BoardTile)
 	{
-		super('rat', bT, 2, ps);
+		super('rat', bT, 2);
 	}
 
 	override public function doStuff():Void
@@ -226,9 +224,9 @@ class Rat extends Monster
 
 class Troll extends Monster
 {
-	public function new(bT:BoardTile, ps:PlayState)
+	public function new(bT:BoardTile)
 	{
-		super('troll', bT, 3, ps);
+		super('troll', bT, 3);
 	}
 
 	override public function update()
@@ -245,17 +243,17 @@ class Troll extends Monster
 
 class Dragon extends Monster
 {
-	public function new(bT:BoardTile, ps:PlayState)
+	public function new(bT:BoardTile)
 	{
-		super('dragon', bT, 3, ps);
+		super('dragon', bT, 3);
 	}
 
 	override public function doStuff():Void
 	{
-		var neighbors = boardTile.getAdjacentNeighbors().filter(function (t) return !t.passable && _playState.board.inBounds(t.row, t.column));
+		var neighbors = boardTile.getAdjacentNeighbors().filter(function (t) return !t.passable && PlayState.board.inBounds(t.row, t.column));
 		if(neighbors.length > 0)
 		{
-			_playState.board.replaceByFloor(neighbors[0]);
+			PlayState.board.replaceByFloor(neighbors[0]);
 			heal(0.5);
 		}
 		else 

@@ -74,8 +74,7 @@ class BoardTile extends Sprite
 
 		while(frontier.length > 0)
 		{
-			var neighbors = frontier.pop()
-							.getAdjacentPassableNeighbors();
+			var neighbors = frontier.pop().getAdjacentPassableNeighbors();
 			
 			for(element in connectedTiles)
 			{
@@ -105,6 +104,7 @@ class Exit extends BoardTile
 	{
 		super('exitTile', b, x, y, true);
 		isExit = true;
+		trace('exit x: ' +row, ' | y: ' +column);
 	}
 }
 
