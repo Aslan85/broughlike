@@ -104,7 +104,6 @@ class Exit extends BoardTile
 	{
 		super('exitTile', b, x, y, true);
 		isExit = true;
-		trace('exit x: ' +row, ' | y: ' +column);
 	}
 }
 

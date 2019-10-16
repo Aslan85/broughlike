@@ -1,5 +1,6 @@
 package char;
 
+import kha.math.Vector2;
 import kha.Canvas;
 import kha.input.KeyCode;
 
@@ -8,6 +9,10 @@ import raccoon.State;
 import raccoon.anim.Sprite;
 import raccoon.anim.Animation;
 import raccoon.tool.Util;
+
+import tween.Delta;
+import tween.easing.Sine;
+import tween.easing.Bounce;
 
 import state.PlayState;
 import world.Board;
@@ -80,7 +85,7 @@ class Monster extends Sprite
 		_lifes.clear();
 		for(i in 0 ... Std.int(hp))
 		{
-			var l = new Life((boardTile.row*_tileSize) + (i%3)*(5/16)*_tileSize, (boardTile.column*_tileSize) -Math.floor(i/3)*(5/16)*_tileSize);
+			var l = new Life((this.position.x) + (i%3)*(5/16)*_tileSize, (this.position.y) -Math.floor(i/3)*(5/16)*_tileSize);
 			_lifes.add(l);
 		}
 	}
@@ -113,6 +118,24 @@ class Monster extends Sprite
 					_attackedThisTurn = true;
 					newTile.monster._stunned = true;
 					newTile.monster.hit(1);
+
+					/*
+					var rX = this.position.x;
+					var rY = this.position.y;
+					Delta.tween(this.position).propMultiple( {x:newTile.monster.position.x, y:newTile.monster.position.y }, 0.1)
+											  .ease(Sine.easeIn)
+											  .onActionComplete(function()
+											  {
+													Delta.tween(this.position).propMultiple( {x:rX, y:rY }, 0.1)
+											  		.ease(Sine.easeOut)
+													.onActionComplete(function() 
+													{ 
+														_attackedThisTurn = true;
+														newTile.monster._stunned = true;
+														newTile.monster.hit(1);
+													});
+												});
+					*/
 				}
 			}
 			return true;
@@ -148,8 +171,8 @@ class Monster extends Sprite
 
         boardTile = tile;
         boardTile.monster = this;
-		this.position.x = boardTile.row * _tileSize;
-		this.position.y = boardTile.column * _tileSize;
+
+		Delta.tween(this.position).propMultiple( {x:boardTile.row * _tileSize, y:boardTile.column * _tileSize }, 0.2).ease(Sine.easeInOut);
 
 		stepOn();
     }
