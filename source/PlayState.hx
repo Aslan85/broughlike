@@ -7,11 +7,23 @@ import flixel.FlxState;
 class PlayState extends FlxState
 {
 	var _player:Player;
+	var _level:Level;
 
 	override public function create():Void
 	{
+		// Add level
+		_level = new Level();
+		for (i in 0..._level.tiles.length)
+		{
+			for (j in 0..._level.tiles[i].length)
+			{
+				add(_level.tiles[i][j]);
+			}
+		}
+
 		// Add player
-		_player = new Player(0, 0);
+		var startTilePosition = _level.randomPassableTile();
+		_player = new Player(startTilePosition.x, startTilePosition.y);
 		add(_player);
 
 		// Add camera
