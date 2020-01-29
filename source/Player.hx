@@ -3,15 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
-class Player extends FlxSprite
+class Player extends Monster
 {
-    var _spriteSize = Const.TILESIZE;
-
-    public function new(?X:Float=0, ?Y:Float=0)
+    public function new(?tile:Tile)
     {
-        super(X, Y);
-
-        loadGraphic(AssetPaths.player__png, true, _spriteSize, _spriteSize);
+        super(AssetPaths.player__png, tile, 1);
     }
 
     override public function update(elapsed:Float):Void
@@ -25,23 +21,19 @@ class Player extends FlxSprite
     {
         if(FlxG.keys.anyJustPressed([UP,W]))
         {
-            if(y > 0)
-                y -= _spriteSize;
+            tryMove(0, -1);
         } 
         if(FlxG.keys.anyJustPressed([DOWN,S]))
         {
-            if(y < Const.TILESIZE*(Const.NUMTILES-1))
-                y += _spriteSize;
+            tryMove(0, 1);
         } 
         if(FlxG.keys.anyJustPressed([LEFT,A]))
         {
-            if(x > 0)
-                x -= _spriteSize;
+            tryMove(-1, 0);
         } 
         if(FlxG.keys.anyJustPressed([RIGHT,D]))
         {
-            if(x < Const.TILESIZE*(Const.NUMTILES-1))
-                x += _spriteSize;
+            tryMove(1, 0);
         } 
     }
 }

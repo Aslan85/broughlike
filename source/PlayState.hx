@@ -23,7 +23,7 @@ class PlayState extends FlxState
 
 		// Add player
 		var startTilePosition = _level.randomPassableTile();
-		_player = new Player(startTilePosition.x, startTilePosition.y);
+		_player = new Player(startTilePosition);
 		add(_player);
 
 		// Add camera

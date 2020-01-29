@@ -63,7 +63,7 @@ class Level
 		do
 		{
 			t = getTile(FlxG.random.int(0, Const.NUMTILES), FlxG.random.int(0, Const.NUMTILES));
-		} while(!t.passable);
+		} while(!t.passable || t.monster != null);
 			
 		return t;
 	}

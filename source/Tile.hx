@@ -5,19 +5,21 @@ import flixel.FlxSprite;
 class Tile extends FlxSprite
 {
     public var passable = false;
+    public var monster:Monster = null;
 
     var _row:Int;
 	var _column:Int;
 	var _level:Level;
 
-    public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?passable:Bool=false, ?level:Level)
+    public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?p:Bool=false, ?l:Level)
     {
+        super(X*Const.TILESIZE, Y*Const.TILESIZE);
+        
+        passable = p;
         _row = Std.int(X);
         _column = Std.int(Y);
-        super(X*Const.TILESIZE, Y*Const.TILESIZE);
-
-        this.passable = passable;
-        this._level = level;
+        _level = l;
+        
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
     }
 
