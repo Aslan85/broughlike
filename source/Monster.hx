@@ -4,6 +4,8 @@ import flixel.FlxSprite;
 
 class Monster extends FlxSprite
 {
+    public var lifes = new Array<Life>();
+    
     var _hp:Int;
     var _isDead = false;
     var _tile:Tile;
@@ -15,6 +17,8 @@ class Monster extends FlxSprite
         _tile = tile;
         _isPlayer = player;
         move(_tile);
+        drawHp();
+
         super(_tile.x, _tile.y);
 
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
@@ -24,6 +28,16 @@ class Monster extends FlxSprite
     {
         super.update(elapsed);
     }
+
+	function drawHp()
+	{
+        lifes = new Array<Life>();
+		for(i in 0 ... _hp)
+		{
+            var l = new Life(this, i);
+            lifes[i] = l;
+		}
+	}
 
     public function aiMove()
     {

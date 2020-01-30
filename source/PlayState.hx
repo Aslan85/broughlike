@@ -21,9 +21,15 @@ class PlayState extends FlxState
 			}
 		}
 
-		// Add Enemies
+		// Add Enemies, player and Life
 		for(i in 0..._level.monsters.length)
+		{
 			add(_level.monsters[i]);
+			for(j in 0..._level.monsters[i].lifes.length)
+			{
+				add(_level.monsters[i].lifes[j]);
+			}
+		}
 
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
