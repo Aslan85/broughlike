@@ -6,11 +6,15 @@ import Tile.Floor;
 
 class Level
 {
-    public var tiles = new Array<Array<Tile>>();
+	public var tiles = new Array<Array<Tile>>();	
+	public var monsters = new Array<Monster>();
+	public var player:Player;
 
-    public function new()
+    public function new(difficulty:Int)
     {
-        generateLevel();
+		generateLevel();
+		generateMonsters(difficulty);
+		generatePlayer();
     }
 
     function generateLevel():Void
@@ -66,5 +70,33 @@ class Level
 		} while(!t.passable || t.monster != null);
 			
 		return t;
+	}
+	
+	function generateMonsters(level:Int)
+	{
+		var numMonsters = level+1;
+		for (i in 0...numMonsters)
+		{
+			spawnMonster();
+		}
+	}
+	
+	function spawnMonster()
+	{
+		switch(FlxG.random.int(0, 5))
+		{
+			case 0: var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
+			case 1: var monster = new Monster.Snake(randomPassableTile()); monsters.push(monster);
+			case 2: var monster = new Monster.Blobby(randomPassableTile()); monsters.push(monster);
+			case 3: var monster = new Monster.Eater(randomPassableTile()); monsters.push(monster);
+			case 4: var monster = new Monster.Jester(randomPassableTile()); monsters.push(monster);
+			default : var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
+		}
+	}
+
+	function generatePlayer()
+	{
+		player = new Player(randomPassableTile());
+		monsters.push(player);
 	}
 }

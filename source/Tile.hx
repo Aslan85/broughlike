@@ -6,26 +6,34 @@ class Tile extends FlxSprite
 {
     public var passable = false;
     public var monster:Monster = null;
+	public var level:Level;
 
-    var _row:Int;
-	var _column:Int;
-	var _level:Level;
+    public var _row:Int;
+	public var _column:Int;
 
     public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?p:Bool=false, ?l:Level)
     {
         super(X*Const.TILESIZE, Y*Const.TILESIZE);
         
         passable = p;
+        level = l;
+
         _row = Std.int(X);
         _column = Std.int(Y);
-        _level = l;
         
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
     }
 
+    //manhattan distance
+	public function dist(other:Tile):Float
+    {
+        return Math.abs(_row-other._row) + Math.abs(_column-other._column);
+    }
+    
+
 	public function getNeighbor(dx:Int, dy:Int):Tile
 	{
-		return _level.getTile(this._row + dx, this._column + dy);
+		return level.getTile(this._row + dx, this._column + dy);
 	}
 
 	function getAdjacentNeighbors():Array<Tile>
@@ -35,7 +43,7 @@ class Tile extends FlxSprite
 		return adjacentTiles;
 	}
 
-	function getAdjacentPassableNeighbors():Array<Tile>
+	public function getAdjacentPassableNeighbors():Array<Tile>
 	{
 		return getAdjacentNeighbors().filter(function (t) return t.passable);
 	}
@@ -62,7 +70,6 @@ class Tile extends FlxSprite
         return connectedTiles;
     }
 }
-
 
 class Floor extends Tile
 {

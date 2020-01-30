@@ -7,7 +7,7 @@ class Player extends Monster
 {
     public function new(?tile:Tile)
     {
-        super(AssetPaths.player__png, tile, 1);
+        super(AssetPaths.player__png, tile, 1, true);
     }
 
     override public function update(elapsed:Float):Void
@@ -19,21 +19,25 @@ class Player extends Monster
 
     function movement():Void
     {
+        var didMove = false;
         if(FlxG.keys.anyJustPressed([UP,W]))
         {
-            tryMove(0, -1);
+            didMove = tryMove(0, -1);
         } 
         if(FlxG.keys.anyJustPressed([DOWN,S]))
         {
-            tryMove(0, 1);
+            didMove = tryMove(0, 1);
         } 
         if(FlxG.keys.anyJustPressed([LEFT,A]))
         {
-            tryMove(-1, 0);
+            didMove = tryMove(-1, 0);
         } 
         if(FlxG.keys.anyJustPressed([RIGHT,D]))
         {
-            tryMove(1, 0);
-        } 
+            didMove = tryMove(1, 0);
+        }
+
+        if(didMove)
+            tick();
     }
 }

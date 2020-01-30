@@ -6,13 +6,13 @@ import flixel.FlxState;
 
 class PlayState extends FlxState
 {
-	var _player:Player;
 	var _level:Level;
+	var _difficulty:Int = 1;
 
 	override public function create():Void
 	{
 		// Add level
-		_level = new Level();
+		_level = new Level(_difficulty);
 		for (i in 0..._level.tiles.length)
 		{
 			for (j in 0..._level.tiles[i].length)
@@ -21,10 +21,9 @@ class PlayState extends FlxState
 			}
 		}
 
-		// Add player
-		var startTilePosition = _level.randomPassableTile();
-		_player = new Player(startTilePosition);
-		add(_player);
+		// Add Enemies
+		for(i in 0..._level.monsters.length)
+			add(_level.monsters[i]);
 
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
