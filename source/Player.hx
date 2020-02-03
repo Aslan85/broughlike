@@ -7,12 +7,13 @@ class Player extends Monster
 {
     public function new(?tile:Tile)
     {
-        super(AssetPaths.player__png, tile, 1, true);
+        super(AssetPaths.player__png, tile, 3, true);
     }
 
     override public function update(elapsed:Float):Void
     {
-        movement();
+        if(!_isDead)
+            movement();
 
         super.update(elapsed);
     }

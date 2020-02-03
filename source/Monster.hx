@@ -7,9 +7,11 @@ class Monster extends FlxSprite
     public var lifes = new Array<Life>();
     
     var _hp:Int;
+    var _maxHp:Int = 5;
     var _isDead = false;
     var _tile:Tile;
     var _isPlayer = false;
+    var _force:Int = 1;
 
     public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?hp:Int=1, ?player = false)
     {
@@ -17,11 +19,28 @@ class Monster extends FlxSprite
         _tile = tile;
         _isPlayer = player;
         move(_tile);
-        drawHp();
+
+        // Draw life
+        lifes = new Array<Life>();
+		for(i in 0 ... _maxHp)
+		{
+            var l = new Life(this, i);
+            lifes[i] = l;
+            lifes[i].kill();
+        }
+        hpCounter();
 
         super(_tile.x, _tile.y);
 
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
+
+        // Add player animatiom
+        if(_isPlayer)
+        {
+            animation.add("idle", [0]);
+            animation.add("die", [1]);
+            animation.play("idle");
+        }
     }
 
     override public function update(elapsed:Float):Void
@@ -29,14 +48,19 @@ class Monster extends FlxSprite
         super.update(elapsed);
     }
 
-	function drawHp()
+	function hpCounter()
 	{
-        lifes = new Array<Life>();
+        // remove old life
+        for(l in lifes)
+        {
+            l.kill();
+        }
+
+        // add lifes
 		for(i in 0 ... _hp)
 		{
-            var l = new Life(this, i);
-            lifes[i] = l;
-		}
+            lifes[i].revive();
+        }
 	}
 
     public function aiMove()
@@ -75,6 +99,13 @@ class Monster extends FlxSprite
             {
                 move(newTile);
             }
+            else
+            {
+                if(_isPlayer != newTile.monster._isPlayer)
+                {
+                    newTile.monster.hit(_force);
+                }
+            }
             return true;
         }
         return false;
@@ -91,6 +122,34 @@ class Monster extends FlxSprite
 
         x = _tile.x;
         y = _tile.y;
+
+        // move life UI
+        for(l in lifes)
+            l.moveLife();
+    }
+
+    function hit(damage:Int):Void
+    {
+        _hp -= damage;
+        hpCounter();
+        if(_hp <= 0)
+        {
+            die();
+        }
+    }
+
+    function die():Void
+    {
+        _isDead = true;
+        _tile.monster = null;
+        if(_isPlayer)
+        {
+            animation.play("die");
+        }
+        else 
+        {
+            kill();
+        }
     }
 
 	function tick()

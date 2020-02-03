@@ -21,7 +21,7 @@ class PlayState extends FlxState
 			}
 		}
 
-		// Add Enemies, player and Life
+		// Add Enemies and player
 		for(i in 0..._level.monsters.length)
 		{
 			add(_level.monsters[i]);
@@ -39,6 +39,12 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float):Void
 	{
+		// Reset game
+        if(FlxG.keys.anyJustPressed([R]))
+        {
+            FlxG.switchState(new PlayState());
+		}
+		
 		super.update(elapsed);
 	}
 }
