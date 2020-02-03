@@ -83,7 +83,9 @@ class Level
 	
 	function spawnMonster()
 	{
-		switch(FlxG.random.int(0, 5))
+		var randomEnemy = FlxG.random.int(0, 5);
+		//randomEnemy = 2;
+		switch(randomEnemy)
 		{
 			case 0: var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
 			case 1: var monster = new Monster.Snake(randomPassableTile()); monsters.push(monster);

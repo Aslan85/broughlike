@@ -8,9 +8,11 @@ class Monster extends FlxSprite
     
     var _hp:Int;
     var _maxHp:Int = 5;
-    var _isDead = false;
+    var _isDead:Bool = false;
+    var _attackedThisTurn:Bool = false;
+    var _isStunned:Bool = false;
     var _tile:Tile;
-    var _isPlayer = false;
+    var _isPlayer:Bool = false;
     var _force:Int = 1;
 
     public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?hp:Int=1, ?player = false)
@@ -92,6 +94,13 @@ class Monster extends FlxSprite
 
     function tryMove(dx:Int, dy:Int):Bool
     {
+        // Stunned character
+        if(_isStunned)
+        {
+            _isStunned = false;
+            return true;
+        }
+
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
@@ -103,6 +112,9 @@ class Monster extends FlxSprite
             {
                 if(_isPlayer != newTile.monster._isPlayer)
                 {
+                    _attackedThisTurn = true;
+                    newTile.monster._isStunned = true;
+
                     newTile.monster.hit(_force);
                 }
             }
@@ -184,6 +196,17 @@ class Snake extends Monster
     {
         super(AssetPaths.snake__png, tile, 1);
     }
+
+    override function doStuff():Void
+    {
+        _attackedThisTurn = false;
+        super.doStuff();
+
+        if(!_attackedThisTurn)
+        {
+            super.doStuff();
+        }
+    }
 }
 
 class Blobby extends Monster
@@ -191,6 +214,16 @@ class Blobby extends Monster
     public function new(?tile:Tile)
     {
         super(AssetPaths.blobby__png, tile, 2);
+    }
+
+    override function doStuff():Void
+    {
+        var startedStunned = _isStunned;
+        super.doStuff();
+        if(!startedStunned)
+        {
+            _isStunned = true;
+        }
     }
 }
 
@@ -200,6 +233,11 @@ class Eater extends Monster
     {
         super(AssetPaths.eater__png, tile, 1);
     }
+
+    override function doStuff():Void
+    {
+        super.doStuff();
+    }
 }
 
 class Jester extends Monster
@@ -207,5 +245,10 @@ class Jester extends Monster
     public function new(?tile:Tile)
     {
         super(AssetPaths.jester__png, tile, 2);
+    }
+
+    override function doStuff():Void
+    {
+        super.doStuff();
     }
 }
