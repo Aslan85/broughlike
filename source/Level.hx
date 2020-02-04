@@ -61,6 +61,13 @@ class Level
 			return new Wall(x, y, this);
     }
 
+	public function replaceByFloor(where:Tile):Void
+	{
+		var floor =  new Floor(where.row, where.column, this);
+		tiles[where.row][where.column].loadGraphicFromSprite(floor);
+		tiles[where.row][where.column] = floor;
+	}
+
 	public function randomPassableTile():Tile
 	{
 		var t:Tile;
@@ -83,8 +90,7 @@ class Level
 	
 	function spawnMonster()
 	{
-		var randomEnemy = FlxG.random.int(0, 5);
-		//randomEnemy = 2;
+		var randomEnemy = FlxG.random.int(0, 4);
 		switch(randomEnemy)
 		{
 			case 0: var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);

@@ -8,8 +8,8 @@ class Tile extends FlxSprite
     public var monster:Monster = null;
 	public var level:Level;
 
-    public var _row:Int;
-	public var _column:Int;
+    public var row:Int;
+	public var column:Int;
 
     public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?p:Bool=false, ?l:Level)
     {
@@ -18,8 +18,8 @@ class Tile extends FlxSprite
         passable = p;
         level = l;
 
-        _row = Std.int(X);
-        _column = Std.int(Y);
+        row = Std.int(X);
+        column = Std.int(Y);
         
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
     }
@@ -27,16 +27,16 @@ class Tile extends FlxSprite
     //manhattan distance
 	public function dist(other:Tile):Float
     {
-        return Math.abs(_row-other._row) + Math.abs(_column-other._column);
+        return Math.abs(row-other.row) + Math.abs(column-other.column);
     }
     
 
 	public function getNeighbor(dx:Int, dy:Int):Tile
 	{
-		return level.getTile(this._row + dx, this._column + dy);
+		return level.getTile(this.row + dx, this.column + dy);
 	}
 
-	function getAdjacentNeighbors():Array<Tile>
+	public function getAdjacentNeighbors():Array<Tile>
 	{
 		var adjacentTiles = new Array<Tile>();
 		adjacentTiles = [getNeighbor(0, -1), getNeighbor(0, 1), getNeighbor(-1, 0), getNeighbor(1, 0)];

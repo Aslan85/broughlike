@@ -1,13 +1,14 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Monster extends FlxSprite
 {
     public var lifes = new Array<Life>();
     
-    var _hp:Int;
-    var _maxHp:Int = 5;
+    var _hp:Float;
+    var _maxHp:Int = 6;
     var _isDead:Bool = false;
     var _attackedThisTurn:Bool = false;
     var _isStunned:Bool = false;
@@ -59,7 +60,7 @@ class Monster extends FlxSprite
         }
 
         // add lifes
-		for(i in 0 ... _hp)
+		for(i in 0 ... Std.int(_hp))
 		{
             lifes[i].revive();
         }
@@ -80,7 +81,7 @@ class Monster extends FlxSprite
 		{
 			neighbors.sort(function(a, b) return Std.int(a.dist(playerTile)) - Std.int(b.dist(playerTile)));
 			var newTile = neighbors[0];
-			tryMove(newTile._row - _tile._row, newTile._column - _tile._column);
+			tryMove(newTile.row - _tile.row, newTile.column - _tile.column);
 		}
     }
     
@@ -138,6 +139,12 @@ class Monster extends FlxSprite
         // move life UI
         for(l in lifes)
             l.moveLife();
+    }
+
+    function heal(recover:Float):Void
+    {
+        _hp = Math.min(_maxHp, _hp+recover);
+        hpCounter();
     }
 
     function hit(damage:Int):Void
@@ -236,7 +243,16 @@ class Eater extends Monster
 
     override function doStuff():Void
     {
-        super.doStuff();
+        var neighbors = _tile.getAdjacentNeighbors().filter(function (t) return !t.passable && _tile.level.inBounds(t.row, t.column));
+		if(neighbors.length > 0)
+		{
+            _tile.level.replaceByFloor(neighbors[0]);
+			heal(0.5);
+		}
+		else 
+		{
+			super.doStuff();
+		}
     }
 }
 
@@ -249,6 +265,11 @@ class Jester extends Monster
 
     override function doStuff():Void
     {
-        super.doStuff();
+        var neighbors = _tile.getAdjacentPassableNeighbors();
+		if(neighbors.length > 0)
+		{
+            var r = FlxG.random.int(0, neighbors.length-1);
+			tryMove(neighbors[r].row - _tile.row, neighbors[r].column - _tile.column);
+		}
     }
 }
