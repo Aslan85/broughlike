@@ -185,7 +185,16 @@ class Monster extends FlxSprite
 				    _tile.level.monsters.splice(i, 1);
             }
 			i --;
-		}
+        }
+        
+        _tile.level.spwanCounter--;
+        if(_tile.level.spwanCounter < 0)
+        {
+            _tile.level.spawnMonster();
+            _tile.level.playState.showMonsters();
+            _tile.level.spwanCounter = _tile.level.spawnRate;
+            _tile.level.spawnRate--;
+        }
 	}
 }
 

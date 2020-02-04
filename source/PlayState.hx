@@ -12,7 +12,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		// Add level
-		_level = new Level(_difficulty);
+		_level = new Level(this, _difficulty);
 		for (i in 0..._level.tiles.length)
 		{
 			for (j in 0..._level.tiles[i].length)
@@ -22,15 +22,8 @@ class PlayState extends FlxState
 		}
 
 		// Add Enemies and player
-		for(i in 0..._level.monsters.length)
-		{
-			add(_level.monsters[i]);
-			for(j in 0..._level.monsters[i].lifes.length)
-			{
-				add(_level.monsters[i].lifes[j]);
-			}
-		}
-
+		showMonsters();
+		
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
 
@@ -46,5 +39,20 @@ class PlayState extends FlxState
 		}
 		
 		super.update(elapsed);
+	}
+
+	public function showMonsters()
+	{
+		if(_level.monsters == null)
+			return;
+
+		for(i in 0..._level.monsters.length)
+		{
+			add(_level.monsters[i]);
+			for(j in 0..._level.monsters[i].lifes.length)
+			{
+				add(_level.monsters[i].lifes[j]);
+			}
+		}
 	}
 }

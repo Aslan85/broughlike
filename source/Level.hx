@@ -10,11 +10,21 @@ class Level
 	public var monsters = new Array<Monster>();
 	public var player:Player;
 
-    public function new(difficulty:Int)
+	public var spwanCounter:Int;
+	public var spawnRate:Int;
+
+	public var playState:PlayState;
+
+    public function new(state:PlayState, difficulty:Int)
     {
+		playState = state;
+
+		spawnRate = 15;
+		spwanCounter = spawnRate;
+
 		generateLevel();
-		generateMonsters(difficulty);
-		generatePlayer();
+		addMonsters(difficulty);
+		addPlayer();
     }
 
     function generateLevel():Void
@@ -79,7 +89,7 @@ class Level
 		return t;
 	}
 	
-	function generateMonsters(level:Int)
+	function addMonsters(level:Int)
 	{
 		var numMonsters = level+1;
 		for (i in 0...numMonsters)
@@ -88,7 +98,7 @@ class Level
 		}
 	}
 	
-	function spawnMonster()
+	public function spawnMonster()
 	{
 		var randomEnemy = FlxG.random.int(0, 4);
 		switch(randomEnemy)
@@ -102,7 +112,7 @@ class Level
 		}
 	}
 
-	function generatePlayer()
+	function addPlayer()
 	{
 		player = new Player(randomPassableTile());
 		monsters.push(player);
