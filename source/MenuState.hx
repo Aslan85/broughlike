@@ -1,9 +1,10 @@
 package;
 
-import flixel.text.FlxText;
-import flixel.ui.FlxButton;
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.util.FlxColor;
+import flixel.text.FlxText;
+import flixel.ui.FlxButton;
 
 class MenuState extends FlxState
 {
@@ -12,6 +13,9 @@ class MenuState extends FlxState
 
 	override public function create():Void
 	{
+		// Color background camera
+        FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
+        
         // Title
         _txtTitle = new FlxText(20, 0, 0, "BroughLike", 22);
         _txtTitle.alignment = CENTER;

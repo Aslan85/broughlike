@@ -118,16 +118,13 @@ class Monster extends FlxSprite
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
-            if(newTile.monster == null)
+            if(newTile.monster == null ||
+                (newTile.monster != null && newTile.monster._teleportCounter > 0))
             {
                 move(newTile);
             }
             else
             {
-                if(newTile.monster._teleportCounter > 0)
-                {
-                    return false;
-                }
                 if(isPlayer != newTile.monster.isPlayer)
                 {
                     _attackedThisTurn = true;
