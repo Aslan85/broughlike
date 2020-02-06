@@ -7,8 +7,8 @@ class Tile extends FlxSprite
 {
     public var passable = false;
     public var monster:Monster = null;
-	public var level:Level;
-
+    public var hasTreasure:Treasure = null;
+    public var level:Level;
     public var row:Int;
 	public var column:Int;
 
@@ -80,6 +80,23 @@ class Floor extends Tile
     public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
     {
         super(X, Y, AssetPaths.floor__png, true, level);
+    }
+
+    override function stepOn(monster:Monster):Void
+    {
+        if(monster.isPlayer)
+        {
+            if(hasTreasure != null)
+            {
+                hasTreasure.kill();
+                hasTreasure = null;
+
+                level.spawnMonster();
+                level.playState.showMonsters();
+                
+                level.playState.score++;
+            }
+        }
     }
 }
 

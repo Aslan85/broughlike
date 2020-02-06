@@ -7,7 +7,8 @@ import Tile.Floor;
 
 class Level
 {
-	public var tiles = new Array<Array<Tile>>();	
+	public var tiles = new Array<Array<Tile>>();
+	public var treasures = new Array<Treasure>();	
 	public var monsters = new Array<Monster>();
 	public var player:Player;
 
@@ -24,6 +25,7 @@ class Level
 		spwanCounter = spawnRate;
 
 		generateLevel();
+		generateTreasures();
 		addMonsters(difficulty);
 		addPlayer(startLife);
 
@@ -33,6 +35,7 @@ class Level
 
     function generateLevel():Void
     {
+		// Create all tiles
         var b = 0;
 		do
 		{
@@ -60,7 +63,19 @@ class Level
 			}
 		}
 		return passableTiles;
-    }
+	}
+	
+	function generateTreasures():Void
+	{
+		// Add treasure on tiles
+		for (i in 0...3)
+		{
+			var tile = randomPassableTile();
+			var treasure = new Treasure(tile);
+			treasures.push(treasure);
+			tile.hasTreasure = treasure;
+		}
+	}
 
 	public function inBounds(x:Int, y:Int):Bool
 	{

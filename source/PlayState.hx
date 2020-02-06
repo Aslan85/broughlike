@@ -6,11 +6,17 @@ import flixel.util.FlxColor;
 
 class PlayState extends FlxState
 {
-	var _level:Level;
+	public var score:Int = 0;
 	public var difficulty:Int = 1;
+
+	var _level:Level;
 
 	override public function create():Void
 	{
+		// Init
+		score = 0;
+		difficulty = 1;
+
 		// Start Level
 		startLevel(Const.PLAYERSTARTLIFE);
 		
@@ -46,6 +52,9 @@ class PlayState extends FlxState
 			}
 		}
 
+		// Add treasures
+		showTreasures();
+
 		// Add Enemies and player
 		showMonsters();
 	}
@@ -54,6 +63,14 @@ class PlayState extends FlxState
 	{
 		if(_level != null)
 		{
+			// kill all treasures
+			{
+				for(i in 0..._level.treasures.length)
+				{
+					_level.treasures[i].kill();
+				}
+			}
+
 			// kill all monsters with lifes
 			if(_level.monsters != null)
 			{
@@ -73,9 +90,22 @@ class PlayState extends FlxState
 				for (j in 0..._level.tiles[i].length)
 				{
 					if(_level.tiles[i][j] != null)
+					{
 						_level.tiles[i][j].kill();
+					}
 				}
 			}
+		}
+	}
+
+	public function showTreasures()
+	{
+		if(_level.treasures == null)
+			return;
+
+		for(i in 0..._level.treasures.length)
+		{
+			add(_level.treasures[i]);
 		}
 	}
 
