@@ -6,21 +6,22 @@ import flixel.FlxSprite;
 class Monster extends FlxSprite
 {
     public var lifes = new Array<Life>();
+    public var isPlayer:Bool = false;
+    public var hp:Float;
     
-    var _hp:Float;
-    var _maxHp:Int = 6;
+    var _maxHp:Int = Const.MAXHP;
+    var _force:Int = Const.FORCE;
     var _isDead:Bool = false;
     var _attackedThisTurn:Bool = false;
     var _isStunned:Bool = false;
+    var _teleportCounter:Int = Const.TELEPORTCOUNTER;
     var _tile:Tile;
-    var _isPlayer:Bool = false;
-    var _force:Int = 1;
 
-    public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?hp:Int=1, ?player = false)
+    public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?health:Float=1, ?player = false)
     {
-        _hp = hp;
+        hp = health;
         _tile = tile;
-        _isPlayer = player;
+        isPlayer = player;
         move(_tile);
 
         // Draw life
@@ -31,18 +32,24 @@ class Monster extends FlxSprite
             lifes[i] = l;
             lifes[i].kill();
         }
-        hpCounter();
 
         super(_tile.x, _tile.y);
 
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
 
         // Add player animatiom
-        if(_isPlayer)
+        animation.add("idle", [0]);
+        animation.add("die", [1]);
+        animation.add("teleport",[2]);
+        if(isPlayer)
         {
-            animation.add("idle", [0]);
-            animation.add("die", [1]);
+            hpCounter();
             animation.play("idle");
+            _teleportCounter = 0;
+        }
+        else
+        {
+            animation.play("teleport");
         }
     }
 
@@ -60,22 +67,35 @@ class Monster extends FlxSprite
         }
 
         // add lifes
-		for(i in 0 ... Std.int(_hp))
+		for(i in 0 ... Std.int(hp))
 		{
             lifes[i].revive();
         }
 	}
 
-    public function aiMove()
+    public function aiMove():Void
     {
-        if(!_isPlayer)
-            doStuff();
+        if(isPlayer)
+            return;
+           
+        _teleportCounter -= 1;
+        if(_isStunned || _teleportCounter > 0)
+        {
+            _isStunned = false;
+            return;
+        }
+        else if(_teleportCounter == 0)
+        {
+            activeMonsterAfterTeleport();
+        }
+
+        doStuff();
     }
 
 	function doStuff():Void
 	{
 		var neighbors = _tile.getAdjacentPassableNeighbors();
-        neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster._isPlayer));
+        neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster.isPlayer));
         var playerTile = getPlayerTile();
         if(neighbors.length > 0 && playerTile != null)
 		{
@@ -95,13 +115,6 @@ class Monster extends FlxSprite
 
     function tryMove(dx:Int, dy:Int):Bool
     {
-        // Stunned character
-        if(_isStunned)
-        {
-            _isStunned = false;
-            return true;
-        }
-
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
@@ -111,7 +124,11 @@ class Monster extends FlxSprite
             }
             else
             {
-                if(_isPlayer != newTile.monster._isPlayer)
+                if(newTile.monster._teleportCounter > 0)
+                {
+                    return false;
+                }
+                if(isPlayer != newTile.monster.isPlayer)
                 {
                     _attackedThisTurn = true;
                     newTile.monster._isStunned = true;
@@ -122,6 +139,12 @@ class Monster extends FlxSprite
             return true;
         }
         return false;
+    }
+
+    function activeMonsterAfterTeleport()
+    {
+        animation.play("idle");
+        hpCounter();
     }
 
     function move(tile:Tile):Void
@@ -139,19 +162,22 @@ class Monster extends FlxSprite
         // move life UI
         for(l in lifes)
             l.moveLife();
+
+        // Check exit tile
+        _tile.stepOn(this);
     }
 
     function heal(recover:Float):Void
     {
-        _hp = Math.min(_maxHp, _hp+recover);
+        hp = Math.min(_maxHp, hp+recover);
         hpCounter();
     }
 
     function hit(damage:Int):Void
     {
-        _hp -= damage;
+        hp -= damage;
         hpCounter();
-        if(_hp <= 0)
+        if(hp <= 0)
         {
             die();
         }
@@ -161,7 +187,7 @@ class Monster extends FlxSprite
     {
         _isDead = true;
         _tile.monster = null;
-        if(_isPlayer)
+        if(isPlayer)
         {
             animation.play("die");
         }

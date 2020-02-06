@@ -7,22 +7,12 @@ import flixel.FlxState;
 class PlayState extends FlxState
 {
 	var _level:Level;
-	var _difficulty:Int = 1;
+	public var difficulty:Int = 1;
 
 	override public function create():Void
 	{
-		// Add level
-		_level = new Level(this, _difficulty);
-		for (i in 0..._level.tiles.length)
-		{
-			for (j in 0..._level.tiles[i].length)
-			{
-				add(_level.tiles[i][j]);
-			}
-		}
-
-		// Add Enemies and player
-		showMonsters();
+		// Start Level
+		startLevel(Const.PLAYERSTARTLIFE);
 		
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
@@ -41,6 +31,54 @@ class PlayState extends FlxState
 		super.update(elapsed);
 	}
 
+	public function startLevel(playerStartLife:Float):Void
+	{
+		// Clear all level data
+		clearLevel();
+
+		// Add level
+		_level = new Level(this, difficulty, playerStartLife);
+		for (i in 0..._level.tiles.length)
+		{
+			for (j in 0..._level.tiles[i].length)
+			{
+				add(_level.tiles[i][j]);
+			}
+		}
+
+		// Add Enemies and player
+		showMonsters();
+	}
+
+	function clearLevel():Void
+	{
+		if(_level != null)
+		{
+			// kill all monsters with lifes
+			if(_level.monsters != null)
+			{
+				for(i in 0..._level.monsters.length)
+				{
+					for(j in 0...Const.MAXHP)
+					{
+						_level.monsters[i].lifes[j].kill();
+					}
+					_level.monsters[i].kill();
+				}
+			}
+
+			// kill all tiles
+			for (i in 0..._level.tiles.length)
+			{
+				for (j in 0..._level.tiles[i].length)
+				{
+					if(_level.tiles[i][j] != null)
+						_level.tiles[i][j].kill();
+				}
+			}
+		}
+	}
+
 	public function showMonsters()
 	{
 		if(_level.monsters == null)
@@ -49,7 +87,7 @@ class PlayState extends FlxState
 		for(i in 0..._level.monsters.length)
 		{
 			add(_level.monsters[i]);
-			for(j in 0..._level.monsters[i].lifes.length)
+			for(j in 0...Const.MAXHP)
 			{
 				add(_level.monsters[i].lifes[j]);
 			}

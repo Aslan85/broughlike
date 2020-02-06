@@ -5,9 +5,9 @@ import flixel.FlxSprite;
 
 class Player extends Monster
 {
-    public function new(?tile:Tile)
+    public function new(?tile:Tile, ?life:Float)
     {
-        super(AssetPaths.player__png, tile, 3, true);
+        super(AssetPaths.player__png, tile, life, true);
     }
 
     override public function update(elapsed:Float):Void

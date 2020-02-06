@@ -1,5 +1,6 @@
 package;
 
+import Tile.Exit;
 import flixel.FlxG;
 import Tile.Wall;
 import Tile.Floor;
@@ -15,7 +16,7 @@ class Level
 
 	public var playState:PlayState;
 
-    public function new(state:PlayState, difficulty:Int)
+    public function new(state:PlayState, difficulty:Int, startLife:Float)
     {
 		playState = state;
 
@@ -24,8 +25,11 @@ class Level
 
 		generateLevel();
 		addMonsters(difficulty);
-		addPlayer();
-    }
+		addPlayer(startLife);
+
+		// Add Exit
+		replaceByExit(randomPassableTile());
+	}
 
     function generateLevel():Void
     {
@@ -78,6 +82,13 @@ class Level
 		tiles[where.row][where.column] = floor;
 	}
 
+	public function replaceByExit(where:Tile):Void
+	{
+		var exit =  new Exit(where.row, where.column, this);
+		tiles[where.row][where.column].loadGraphicFromSprite(exit);
+		tiles[where.row][where.column] = exit;
+	}
+
 	public function randomPassableTile():Tile
 	{
 		var t:Tile;
@@ -101,6 +112,7 @@ class Level
 	public function spawnMonster()
 	{
 		var randomEnemy = FlxG.random.int(0, 4);
+		//randomEnemy = 3;
 		switch(randomEnemy)
 		{
 			case 0: var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
@@ -112,9 +124,9 @@ class Level
 		}
 	}
 
-	function addPlayer()
+	function addPlayer(life:Float)
 	{
-		player = new Player(randomPassableTile());
+		player = new Player(randomPassableTile(), life);
 		monsters.push(player);
 	}
 }

@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Tile extends FlxSprite
@@ -24,13 +25,16 @@ class Tile extends FlxSprite
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
     }
 
+    public function stepOn(monster:Monster):Void
+    {
+    }
+
     //manhattan distance
 	public function dist(other:Tile):Float
     {
         return Math.abs(row-other.row) + Math.abs(column-other.column);
     }
     
-
 	public function getNeighbor(dx:Int, dy:Int):Tile
 	{
 		return level.getTile(this.row + dx, this.column + dy);
@@ -84,5 +88,33 @@ class Wall extends Tile
     public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
     {
         super(X, Y, AssetPaths.wall__png, false, level);
+    }
+}
+
+class Exit extends Tile
+{
+    public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
+    {
+        super(X, Y, AssetPaths.exit__png, true, level);
+    }
+
+    override function stepOn(monster:Monster):Void
+    {
+        if(monster.isPlayer)
+        {
+            if(level.playState.difficulty == Const.MAXLEVELS)
+            {
+                // Return to home title
+                // TODO : Game End Screen
+                FlxG.switchState(new MenuState());
+            }
+            else
+            {
+                // Increase level
+                level.playState.difficulty++;
+                var lifeUp:Float = Math.min(Const.MAXHP, monster.hp +1);
+                level.playState.startLevel(lifeUp);
+            }
+        }
     }
 }
