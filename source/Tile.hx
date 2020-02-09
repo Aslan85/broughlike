@@ -93,8 +93,8 @@ class Floor extends Tile
 
                 level.spawnMonster();
                 level.playState.showMonsters();
-                
-                level.playState.score++;
+
+                level.playState.addScore(Const.POINTSBYTREASURE);
             }
         }
     }
@@ -128,7 +128,8 @@ class Exit extends Tile
             else
             {
                 // Increase level
-                level.playState.difficulty++;
+                level.playState.addLevel();
+                level.playState.addScore(Const.POINTSBYLEVELING);
                 var lifeUp:Float = Math.min(Const.MAXHP, monster.hp +1);
                 level.playState.startLevel(lifeUp);
             }

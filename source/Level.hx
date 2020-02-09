@@ -141,7 +141,12 @@ class Level
 
 	function addPlayer(life:Float)
 	{
-		player = new Player(randomPassableTile(), life);
+		var t:Tile;
+		do
+		{
+			t = randomPassableTile();
+		} while(t.hasTreasure != null); // avoid to spawn the player on a treasure
+		player = new Player(t, life);
 		monsters.push(player);
 	}
 }

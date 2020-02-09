@@ -9,6 +9,8 @@ class PlayState extends FlxState
 	public var score:Int = 0;
 	public var difficulty:Int = 1;
 
+	var _hud:Hud;
+	var _gameOverHud:GameOverHud;
 	var _level:Level;
 
 	override public function create():Void
@@ -22,6 +24,12 @@ class PlayState extends FlxState
 		
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
+
+		// Add UI
+		_hud = new Hud();
+		add(_hud);
+		_hud.updateHUD(difficulty, score);
+		_gameOverHud = new GameOverHud();
 
 		super.create();
 	}
@@ -122,5 +130,23 @@ class PlayState extends FlxState
 				add(_level.monsters[i].lifes[j]);
 			}
 		}
+	}
+
+	public function addScore(points:Int):Void
+	{
+		score += points;
+		_hud.updateHUD(difficulty, score);
+	}
+
+	public function addLevel():Void
+	{
+		difficulty++;
+		_hud.updateHUD(difficulty, score);
+	}
+
+	public function showGameOver():Void
+	{
+		add(_gameOverHud);
+		_gameOverHud.showGameOver();
 	}
 }

@@ -9,6 +9,11 @@ class Const
     public static var MAXLEVELS = 6;
     public static var PLAYERSTARTLIFE = 3;
 
+    // Points
+    public static var POINTSBYKILLNGENEMIES = 5;
+    public static var POINTSBYTREASURE = 15;
+    public static var POINTSBYLEVELING = 50;
+
     // Monster
     public static var MAXHP = 6;
     public static var FORCE = 1;
