@@ -126,7 +126,8 @@ class Monster extends FlxSprite
             }
             else
             {
-                if(isPlayer != newTile.monster.isPlayer)
+                if(newTile.monster._teleportCounter < 0 &&
+                    isPlayer != newTile.monster.isPlayer)
                 {
                     _attackedThisTurn = true;
                     newTile.monster._isStunned = true;
