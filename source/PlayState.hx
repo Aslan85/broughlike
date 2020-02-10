@@ -52,19 +52,7 @@ class PlayState extends FlxState
 
 		// Add level
 		_level = new Level(this, difficulty, playerStartLife);
-		for (i in 0..._level.tiles.length)
-		{
-			for (j in 0..._level.tiles[i].length)
-			{
-				add(_level.tiles[i][j]);
-			}
-		}
-
-		// Add treasures
-		showTreasures();
-
-		// Add Enemies and player
-		showMonsters();
+		add(_level);
 	}
 
 	function clearLevel():Void
@@ -72,11 +60,13 @@ class PlayState extends FlxState
 		if(_level != null)
 		{
 			// kill all treasures
+			if(_level.treasures != null)
 			{
 				for(i in 0..._level.treasures.length)
 				{
 					_level.treasures[i].kill();
 				}
+				_level.treasures = [];
 			}
 
 			// kill all monsters with lifes
@@ -90,45 +80,24 @@ class PlayState extends FlxState
 					}
 					_level.monsters[i].kill();
 				}
+				_level.monsters = [];
 			}
 
 			// kill all tiles
-			for (i in 0..._level.tiles.length)
+			if(_level.tiles != null)
 			{
-				for (j in 0..._level.tiles[i].length)
+				for (i in 0..._level.tiles.length)
 				{
-					if(_level.tiles[i][j] != null)
+					for (j in 0..._level.tiles[i].length)
 					{
-						_level.tiles[i][j].kill();
+						if(_level.tiles[i][j] != null)
+						{
+							_level.tiles[i][j].kill();
+						}
 					}
 				}
 			}
-		}
-	}
-
-	public function showTreasures()
-	{
-		if(_level.treasures == null)
-			return;
-
-		for(i in 0..._level.treasures.length)
-		{
-			add(_level.treasures[i]);
-		}
-	}
-
-	public function showMonsters()
-	{
-		if(_level.monsters == null)
-			return;
-
-		for(i in 0..._level.monsters.length)
-		{
-			add(_level.monsters[i]);
-			for(j in 0...Const.MAXHP)
-			{
-				add(_level.monsters[i].lifes[j]);
-			}
+			_level.tiles = [];
 		}
 	}
 

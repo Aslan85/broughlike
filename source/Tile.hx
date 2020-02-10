@@ -92,7 +92,6 @@ class Floor extends Tile
                 hasTreasure = null;
 
                 level.spawnMonster();
-                level.playState.showMonsters();
 
                 level.playState.addScore(Const.POINTSBYTREASURE);
             }

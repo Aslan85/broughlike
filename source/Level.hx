@@ -1,11 +1,10 @@
 package;
 
-import Tile.Exit;
 import flixel.FlxG;
-import Tile.Wall;
-import Tile.Floor;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 
-class Level
+class Level extends FlxTypedGroup<FlxSprite>
 {
 	public var tiles = new Array<Array<Tile>>();
 	public var treasures = new Array<Treasure>();	
@@ -19,17 +18,20 @@ class Level
 
     public function new(state:PlayState, difficulty:Int, startLife:Float)
     {
+		super();
+
 		playState = state;
 
 		spawnRate = 15;
 		spwanCounter = spawnRate;
 
+		// Create Level
 		generateLevel();
 		generateTreasures();
 		addMonsters(difficulty);
 		addPlayer(startLife);
 
-		// Add Exit
+		// Add Exit tile
 		replaceByExit(randomPassableTile());
 	}
 
@@ -39,7 +41,7 @@ class Level
         var b = 0;
 		do
 		{
-            b = generateTiles();
+			b = generateTiles();
 		} while(b != randomPassableTile().getConnectedTiles().length);
     }
 
@@ -53,13 +55,15 @@ class Level
 			{
 				if(FlxG.random.float() < 0.3 || !inBounds(i, j))
 				{
-					tiles[i][j] = new Wall(i, j, this);
+					tiles[i][j] = new Tile.Wall(i, j, this);
 				}
 				else
 				{
-                    tiles[i][j] = new Floor(i, j, this);
+                    tiles[i][j] = new Tile.Floor(i, j, this);
                     passableTiles++;
 				}
+
+				add(tiles[i][j]);
 			}
 		}
 		return passableTiles;
@@ -72,6 +76,7 @@ class Level
 		{
 			var tile = randomPassableTile();
 			var treasure = new Treasure(tile);
+			add(treasure);
 			treasures.push(treasure);
 			tile.hasTreasure = treasure;
 		}
@@ -87,19 +92,19 @@ class Level
 		if(inBounds(x,y))
 			return tiles[x][y];
     	else
-			return new Wall(x, y, this);
+			return new Tile.Wall(x, y, this);
     }
 
 	public function replaceByFloor(where:Tile):Void
 	{
-		var floor =  new Floor(where.row, where.column, this);
+		var floor =  new Tile.Floor(where.row, where.column, this);
 		tiles[where.row][where.column].loadGraphicFromSprite(floor);
 		tiles[where.row][where.column] = floor;
 	}
 
 	public function replaceByExit(where:Tile):Void
 	{
-		var exit =  new Exit(where.row, where.column, this);
+		var exit =  new Tile.Exit(where.row, where.column, this);
 		tiles[where.row][where.column].loadGraphicFromSprite(exit);
 		tiles[where.row][where.column] = exit;
 	}
@@ -128,14 +133,22 @@ class Level
 	{
 		var randomEnemy = FlxG.random.int(0, 4);
 		//randomEnemy = 3;
+		var monster:Monster;
 		switch(randomEnemy)
 		{
-			case 0: var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
-			case 1: var monster = new Monster.Snake(randomPassableTile()); monsters.push(monster);
-			case 2: var monster = new Monster.Blobby(randomPassableTile()); monsters.push(monster);
-			case 3: var monster = new Monster.Eater(randomPassableTile()); monsters.push(monster);
-			case 4: var monster = new Monster.Jester(randomPassableTile()); monsters.push(monster);
-			default : var monster = new Monster.Bird(randomPassableTile()); monsters.push(monster);
+			case 0: monster = new Monster.Bird(randomPassableTile());
+			case 1: monster = new Monster.Snake(randomPassableTile());
+			case 2: monster = new Monster.Blobby(randomPassableTile());
+			case 3: monster = new Monster.Eater(randomPassableTile());
+			case 4: monster = new Monster.Jester(randomPassableTile());
+			default : monster = new Monster.Bird(randomPassableTile());
+		}
+		monsters.push(monster);
+		add(monster);
+
+		for (i in 0...monster.lifes.length)
+		{
+			add(monster.lifes[i]);
 		}
 	}
 
@@ -148,5 +161,11 @@ class Level
 		} while(t.hasTreasure != null); // avoid to spawn the player on a treasure
 		player = new Player(t, life);
 		monsters.push(player);
+
+		add(player);
+		for (i in 0...player.lifes.length)
+		{
+			add(player.lifes[i]);
+		}
 	}
 }

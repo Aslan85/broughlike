@@ -78,7 +78,7 @@ class Monster extends FlxSprite
         if(isPlayer)
             return;
            
-        _teleportCounter -= 1;
+        _teleportCounter--;
         if(_isStunned || _teleportCounter > 0)
         {
             _isStunned = false;
@@ -87,6 +87,7 @@ class Monster extends FlxSprite
         else if(_teleportCounter == 0)
         {
             activeMonsterAfterTeleport();
+            return;
         }
 
         doStuff();
@@ -174,7 +175,7 @@ class Monster extends FlxSprite
     {
         hp -= damage;
         hpCounter();
-        if(hp <= 0)
+        if(hp <= 0.5)
         {
             die();
         }
@@ -216,7 +217,6 @@ class Monster extends FlxSprite
         if(_tile.level.spwanCounter < 0)
         {
             _tile.level.spawnMonster();
-            _tile.level.playState.showMonsters();
             _tile.level.spwanCounter = _tile.level.spawnRate;
             _tile.level.spawnRate--;
         }
