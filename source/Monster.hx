@@ -45,7 +45,7 @@ class Monster extends FlxSprite
         {
             hpCounter();
             animation.play("idle");
-            _teleportCounter = 0;
+            _teleportCounter = -1;
         }
         else
         {
