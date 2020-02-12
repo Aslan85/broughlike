@@ -43,6 +43,14 @@ class Level extends FlxTypedGroup<FlxSprite>
 		{
 			b = generateTiles();
 		} while(b != randomPassableTile().getConnectedTiles().length);
+
+		for (i in 0...Const.NUMTILES)
+		{
+			for (j in 0...Const.NUMTILES)
+			{
+				add(tiles[i][j]);
+			}
+		}
     }
 
     function generateTiles():Int
@@ -62,8 +70,6 @@ class Level extends FlxTypedGroup<FlxSprite>
                     tiles[i][j] = new Tile.Floor(i, j, this);
                     passableTiles++;
 				}
-
-				add(tiles[i][j]);
 			}
 		}
 		return passableTiles;

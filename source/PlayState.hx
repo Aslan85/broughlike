@@ -39,7 +39,10 @@ class PlayState extends FlxState
 		// Reset game
         if(FlxG.keys.anyJustPressed([R]))
         {
-            FlxG.switchState(new PlayState());
+			FlxG.camera.fade(FlxColor.BLACK, .33, false, function()
+			{
+				FlxG.switchState(new PlayState());
+			});
 		}
 		
 		super.update(elapsed);
@@ -47,58 +50,13 @@ class PlayState extends FlxState
 
 	public function startLevel(playerStartLife:Float):Void
 	{
-		// Clear all level data
-		clearLevel();
+		// Clear all previous level data
+		if(_level != null)
+			_level.kill();
 
 		// Add level
 		_level = new Level(this, difficulty, playerStartLife);
 		add(_level);
-	}
-
-	function clearLevel():Void
-	{
-		if(_level != null)
-		{
-			// kill all treasures
-			if(_level.treasures != null)
-			{
-				for(i in 0..._level.treasures.length)
-				{
-					_level.treasures[i].kill();
-				}
-				_level.treasures = [];
-			}
-
-			// kill all monsters with lifes
-			if(_level.monsters != null)
-			{
-				for(i in 0..._level.monsters.length)
-				{
-					for(j in 0...Const.MAXHP)
-					{
-						_level.monsters[i].lifes[j].kill();
-					}
-					_level.monsters[i].kill();
-				}
-				_level.monsters = [];
-			}
-
-			// kill all tiles
-			if(_level.tiles != null)
-			{
-				for (i in 0..._level.tiles.length)
-				{
-					for (j in 0..._level.tiles[i].length)
-					{
-						if(_level.tiles[i][j] != null)
-						{
-							_level.tiles[i][j].kill();
-						}
-					}
-				}
-			}
-			_level.tiles = [];
-		}
 	}
 
 	public function addScore(points:Int):Void
