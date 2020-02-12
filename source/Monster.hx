@@ -79,14 +79,14 @@ class Monster extends FlxSprite
             return;
            
         _teleportCounter--;
-        if(_isStunned || _teleportCounter > 0)
-        {
-            _isStunned = false;
-            return;
-        }
-        else if(_teleportCounter == 0)
+        if(_teleportCounter == 0)
         {
             activeMonsterAfterTeleport();
+            return;
+        }
+        else if(_isStunned || _teleportCounter > 0)
+        {
+            _isStunned = false;
             return;
         }
 
@@ -119,15 +119,13 @@ class Monster extends FlxSprite
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
-            if(newTile.monster == null ||
-                (newTile.monster != null && newTile.monster._teleportCounter > 0))
+            if(newTile.monster == null)
             {
                 move(newTile);
             }
             else
             {
-                if(newTile.monster._teleportCounter < 0 &&
-                    isPlayer != newTile.monster.isPlayer)
+                if(isPlayer != newTile.monster.isPlayer)
                 {
                     _attackedThisTurn = true;
                     newTile.monster._isStunned = true;
