@@ -120,6 +120,9 @@ class Exit extends Tile
         {
             if(level.playState.difficulty == Const.MAXLEVELS)
             {
+                // Add run information
+                level.playState.addScores(true);
+
                 // Return to home title
                 // TODO : Game End Screen
                 FlxG.switchState(new MenuState());

@@ -187,6 +187,7 @@ class Monster extends FlxSprite
         if(isPlayer)
         {
             animation.play("die");
+            _tile.level.playState.addScores(false);
             _tile.level.playState.showGameOver();
         }
         else 

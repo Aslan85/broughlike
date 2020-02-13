@@ -4,6 +4,7 @@ class Const
     public static var TILESIZE = 16;
     public static var NUMTILES = 9; // with 24, large and cool map
     public static var UIWIDTH = 4;
+    public static var SHOWMAXSCORES = 7;
 
     // Game
     public static var MAXLEVELS = 6;

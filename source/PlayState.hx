@@ -30,7 +30,7 @@ class PlayState extends FlxState
 		add(_hud);
 		_hud.updateHUD(difficulty, score);
 		_gameOverHud = new GameOverHud();
-
+		
 		super.create();
 	}
 
@@ -71,9 +71,14 @@ class PlayState extends FlxState
 		_hud.updateHUD(difficulty, score);
 	}
 
+	public function addScores(active:Bool):Void
+	{
+		_gameOverHud.addScore(score, active);
+	}
+
 	public function showGameOver():Void
 	{
-		add(_gameOverHud);
 		_gameOverHud.showGameOver();
+		add(_gameOverHud);
 	}
 }
