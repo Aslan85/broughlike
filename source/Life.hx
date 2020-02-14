@@ -11,15 +11,16 @@ class Life extends FlxSprite
     {
         _lifePos = pos;
         _target = target;
-        moveLife();
         super(x, y);
 
         loadGraphic(AssetPaths.life__png, true, Const.TILESIZE, Const.TILESIZE);
     }
 
-    public function moveLife()
+    override public function update(elapsed:Float):Void
     {
         x = _target.x + (_lifePos%3)*(5/Const.TILESIZE)*Const.TILESIZE;
         y = _target.y - Math.floor(_lifePos/3)*(5/Const.TILESIZE)*Const.TILESIZE;
+
+        super.update(elapsed);
     }
 }

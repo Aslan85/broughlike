@@ -156,10 +156,6 @@ class Monster extends FlxSprite
         x = _tile.x;
         y = _tile.y;
 
-        // move life UI
-        for(l in lifes)
-            l.moveLife();
-
         // Check exit tile
         _tile.stepOn(this);
     }
