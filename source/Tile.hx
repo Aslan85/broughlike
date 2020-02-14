@@ -10,9 +10,10 @@ class Tile extends FlxSprite
     public var hasTreasure:Treasure = null;
     public var level:Level;
     public var row:Int;
-	public var column:Int;
+    public var column:Int;
+    public var isExit:Bool;
 
-    public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?p:Bool=false, ?l:Level)
+    public function new(?X:Float=0, ?Y:Float=0, ?path:String=AssetPaths.floor__png, ?p:Bool=false, ?l:Level, ?exit:Bool)
     {
         super(X*Const.TILESIZE, Y*Const.TILESIZE);
         
@@ -21,6 +22,8 @@ class Tile extends FlxSprite
 
         row = Std.int(X);
         column = Std.int(Y);
+
+        isExit = exit;
         
         loadGraphic(path, true, Const.TILESIZE, Const.TILESIZE);
     }
@@ -79,7 +82,7 @@ class Floor extends Tile
 {
     public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
     {
-        super(X, Y, AssetPaths.floor__png, true, level);
+        super(X, Y, AssetPaths.floor__png, true, level, false);
     }
 
     override function stepOn(monster:Monster):Void
@@ -103,7 +106,7 @@ class Wall extends Tile
 {
     public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
     {
-        super(X, Y, AssetPaths.wall__png, false, level);
+        super(X, Y, AssetPaths.wall__png, false, level, false);
     }
 }
 
@@ -111,7 +114,7 @@ class Exit extends Tile
 {
     public function new(?X:Float=0, ?Y:Float=0, ?level:Level)
     {
-        super(X, Y, AssetPaths.exit__png, true, level);
+        super(X, Y, AssetPaths.exit__png, true, level, true);
     }
 
     override function stepOn(monster:Monster):Void

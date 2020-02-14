@@ -6,6 +6,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSave;
+import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
 import flixel.effects.FlxFlicker;
 import haxe.Serializer;
@@ -42,7 +43,8 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
     public function showGameOver():Void
     {
         drawScores();
-        visible = true;
+        var timer:FlxTimer = new FlxTimer();
+        timer.start(2, function(_){ visible = true; });
     }
 
     function drawScores():Void

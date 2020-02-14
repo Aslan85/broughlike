@@ -22,6 +22,7 @@ class Monster extends FlxSprite
     public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?health:Float=1, ?player = false)
     {
         hp = health;
+        tile.monster = this;
         _tile = tile;
         isPlayer = player;
         onMovement = false;
@@ -148,6 +149,10 @@ class Monster extends FlxSprite
                         // Check exit tile
                         _tile.stepOn(this);
                         onMovement = false;
+
+                        if(_tile.isExit && isPlayer)
+                            return;
+                        
                         callback();
                     }}); 
             }
@@ -171,7 +176,8 @@ class Monster extends FlxSprite
                             FlxG.camera.shake(0.01, 0.2);
                             FlxTween.tween(this, { x: origin.x, y: origin.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
                                 {
-                                    newTile.monster.hit(_force);
+                                    if(newTile.monster != null)
+                                        newTile.monster.hit(_force);
                                     onMovement = false;
                                     callback();
                                 }});
@@ -243,14 +249,14 @@ class Monster extends FlxSprite
 			    else
 				    _tile.level.monsters.splice(i, 1);
             }
-			i --;
+			i--;
         }
         
-        _tile.level.spwanCounter--;
-        if(_tile.level.spwanCounter < 0)
+        _tile.level.spawnCounter--;
+        if(_tile.level.spawnCounter < 0)
         {
             _tile.level.spawnMonster();
-            _tile.level.spwanCounter = _tile.level.spawnRate;
+            _tile.level.spawnCounter = _tile.level.spawnRate;
             _tile.level.spawnRate--;
         }
 

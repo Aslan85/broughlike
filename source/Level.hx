@@ -11,7 +11,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 	public var monsters = new Array<Monster>();
 	public var player:Player;
 
-	public var spwanCounter:Int;
+	public var spawnCounter:Int;
 	public var spawnRate:Int;
 
 	public var playState:PlayState;
@@ -24,7 +24,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		playState = state;
 
 		spawnRate = 15;
-		spwanCounter = spawnRate;
+		spawnCounter = spawnRate;
 
 		// Create Level
 		generateLevel();
@@ -84,7 +84,11 @@ class Level extends FlxTypedGroup<FlxSprite>
 		// Add treasure on tiles
 		for (i in 0...3)
 		{
-			var tile = randomPassableTile();
+			var tile:Tile;
+			do
+			{
+				tile = randomPassableTile();
+			} while(tile.isExit); // avoid to spawn the treasure on an exit
 			var treasure = new Treasure(tile);
 			add(treasure);
 			treasures.push(treasure);

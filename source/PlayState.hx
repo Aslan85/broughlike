@@ -12,12 +12,14 @@ class PlayState extends FlxState
 	var _hud:Hud;
 	var _gameOverHud:GameOverHud;
 	var _level:Level;
+	var _showingGameOver:Bool;
 
 	override public function create():Void
 	{
 		// Init
 		score = 0;
 		difficulty = 1;
+		_showingGameOver = false;
 
 		// Start Level
 		startLevel(Const.PLAYERSTARTLIFE);
@@ -78,6 +80,10 @@ class PlayState extends FlxState
 
 	public function showGameOver():Void
 	{
+		if(_showingGameOver)
+			return;
+		
+		_showingGameOver = true;
 		_gameOverHud.showGameOver();
 		add(_gameOverHud);
 	}
