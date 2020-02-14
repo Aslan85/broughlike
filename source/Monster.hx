@@ -168,6 +168,7 @@ class Monster extends FlxSprite
                     onMovement = true;
                     FlxTween.tween(this, { x: destination.x, y: destination.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
                         {
+                            FlxG.camera.shake(0.01, 0.2);
                             FlxTween.tween(this, { x: origin.x, y: origin.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
                                 {
                                     newTile.monster.hit(_force);
