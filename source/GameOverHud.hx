@@ -7,28 +7,33 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.math.FlxMath;
+import flixel.effects.FlxFlicker;
 import haxe.Serializer;
 import haxe.Unserializer;
 
 class GameOverHud extends FlxTypedGroup<FlxSprite>
 {	
-    var _sprBack:FlxSprite;
-    var _txtTitle:FlxText;
-
     public function new()
     {
         super();
 
-        _sprBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+        var _sprBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
         _sprBack.alpha = 0.75;
 		_sprBack.screenCenter();
         add(_sprBack);
 
-        _txtTitle = new FlxText(0, 20, 0, "Game Over", 16);
+        var _txtTitle = new FlxText(0, 10, 0, "Game Over", 16);
         _txtTitle.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
         _txtTitle.alignment = CENTER;
         _txtTitle.screenCenter(X);
         add(_txtTitle);
+        
+
+        var _txtRestart = new FlxText(0, 125, 0, "Press 'R' to restart", 10);
+        _txtRestart.alignment = CENTER;
+        _txtRestart.screenCenter(X);
+        FlxFlicker.flicker(_txtRestart, 0, 0.5);
+        add(_txtRestart);
 
         active = false;
         visible = false;
@@ -45,7 +50,7 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
         var scores:Array<UserSaveData> = getScore();
         if(scores != null)
         {
-            var _txtScoresTitle = new FlxText(0, 50, 0, rightPad(["RUN", "SCORE", "TOTAL"]), 8);
+            var _txtScoresTitle = new FlxText(0, 40, 0, rightPad(["RUN", "SCORE", "TOTAL"]), 8);
             _txtScoresTitle.alignment = CENTER;
             _txtScoresTitle.screenCenter(X);
             add(_txtScoresTitle);
@@ -57,7 +62,7 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
             var minScores = FlxMath.minInt(Const.SHOWMAXSCORES, scores.length);
             for(i in 0 ... minScores)
             {
-                var _txtScore = new FlxText(0, 60+i*10, 0, rightPad([""+scores[i].run, ""+scores[i].score, ""+scores[i].totalScore]), 8);
+                var _txtScore = new FlxText(0, 50+i*10, 0, rightPad([""+scores[i].run, ""+scores[i].score, ""+scores[i].totalScore]), 8);
                 _txtScore.alignment = CENTER;
                 _txtScore.screenCenter(X);
                 if(i == 0)
@@ -73,7 +78,13 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
         for (text in textArray)
         {
             text += "";
-            for(i in text.length...10)
+            var txtSixe:Int = Math.round((10 - text.length)/2);
+            for(i in 0...txtSixe)
+            {
+                var oldText = text;
+                text = " "+oldText;
+            }
+            for(i in 0...txtSixe)
             {
                 text += " ";
             }
