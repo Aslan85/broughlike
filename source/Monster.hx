@@ -2,12 +2,14 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxTween;
 
 class Monster extends FlxSprite
 {
     public var lifes = new Array<Life>();
     public var isPlayer:Bool = false;
     public var hp:Float;
+    public var onMovement:Bool;
     
     var _maxHp:Int = Const.MAXHP;
     var _force:Int = Const.FORCE;
@@ -22,7 +24,7 @@ class Monster extends FlxSprite
         hp = health;
         _tile = tile;
         isPlayer = player;
-        move(_tile);
+        onMovement = false;
 
         // Draw life
         lifes = new Array<Life>();
@@ -82,11 +84,13 @@ class Monster extends FlxSprite
         if(_teleportCounter == 0)
         {
             activeMonsterAfterTeleport();
+            checkMonsterTurn();
             return;
         }
         else if(_isStunned || _teleportCounter > 0)
         {
             _isStunned = false;
+            checkMonsterTurn();
             return;
         }
 
@@ -102,8 +106,13 @@ class Monster extends FlxSprite
 		{
 			neighbors.sort(function(a, b) return Std.int(a.dist(playerTile)) - Std.int(b.dist(playerTile)));
 			var newTile = neighbors[0];
-			tryMove(newTile.row - _tile.row, newTile.column - _tile.column);
-		}
+			tryMove(newTile.row - _tile.row, newTile.column - _tile.column, function(){ checkMonsterTurn(); });
+        }
+        else
+        {
+            checkMonsterTurn();
+        }
+
     }
     
     function getPlayerTile():Tile
@@ -114,50 +123,77 @@ class Monster extends FlxSprite
             return null;
     }
 
-    function tryMove(dx:Int, dy:Int):Bool
+    function tryMove(dx:Int, dy:Int, ?callback):Void
     {
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
             if(newTile.monster == null)
             {
-                move(newTile);
+                if(isPlayer)
+                {
+                    _tile.level.playerTurn = false;
+                }
+
+                if(_tile != null)
+                {
+                    _tile.monster = null;
+                }
+                _tile = newTile;
+                newTile.monster = this;
+        
+                onMovement = true;
+                FlxTween.tween(this, { x: _tile.x, y: _tile.y }, Const.MOVEMENTSPEED, { onComplete: function(_)
+                    {        
+                        // Check exit tile
+                        _tile.stepOn(this);
+                        onMovement = false;
+                        callback();
+                    }}); 
             }
             else
             {
                 if(isPlayer != newTile.monster.isPlayer)
                 {
+                    if(isPlayer)
+                    {
+                        _tile.level.playerTurn = false;
+                    }
+
                     _attackedThisTurn = true;
                     newTile.monster._isStunned = true;
 
-                    newTile.monster.hit(_force);
+                    var origin = this.getPosition();
+                    var destination = newTile.monster.getPosition();
+                    onMovement = true;
+                    FlxTween.tween(this, { x: destination.x, y: destination.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
+                        {
+                            FlxTween.tween(this, { x: origin.x, y: origin.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
+                                {
+                                    newTile.monster.hit(_force);
+                                    onMovement = false;
+                                    callback();
+                                }});
+                        }});   
                 }
             }
-            return true;
         }
-        return false;
+    }
+
+    function checkMonsterTurn()
+    {
+        for(m in _tile.level.monsters)
+        {
+            if(m.onMovement)
+                return;
+        }
+        _tile.level.playerTurn = true;
     }
 
     function activeMonsterAfterTeleport()
     {
         animation.play("idle");
         hpCounter();
-    }
-
-    function move(tile:Tile):Void
-    {
-        if(_tile != null)
-        {
-            _tile.monster = null;
-        }
-        _tile = tile;
-        tile.monster = this;
-
-        x = _tile.x;
-        y = _tile.y;
-
-        // Check exit tile
-        _tile.stepOn(this);
     }
 
     function heal(recover:Float):Void
@@ -195,8 +231,8 @@ class Monster extends FlxSprite
 
 	function tick()
 	{
-		var total = _tile.level.monsters.length;
-		var i = total;
+        var total = _tile.level.monsters.length;
+        var i = total;
 		while(i >= 0)
 		{
             if(_tile.level.monsters[i] != null)
@@ -216,6 +252,8 @@ class Monster extends FlxSprite
             _tile.level.spwanCounter = _tile.level.spawnRate;
             _tile.level.spawnRate--;
         }
+
+        checkMonsterTurn();
 	}
 }
 
@@ -276,8 +314,19 @@ class Eater extends Monster
         var neighbors = _tile.getAdjacentNeighbors().filter(function (t) return !t.passable && _tile.level.inBounds(t.row, t.column));
 		if(neighbors.length > 0)
 		{
-            _tile.level.replaceByFloor(neighbors[0]);
-			heal(0.5);
+            var origin = this.getPosition();
+            var destination = neighbors[0].getPosition();
+            onMovement = true;
+            FlxTween.tween(this, { x: destination.x, y: destination.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
+                {
+                    FlxTween.tween(this, { x: origin.x, y: origin.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
+                        {
+                            _tile.level.replaceByFloor(neighbors[0]);
+			                heal(0.5);
+                            onMovement = false;
+                            checkMonsterTurn();
+                        }});
+                }});               
 		}
 		else 
 		{
@@ -299,7 +348,7 @@ class Jester extends Monster
 		if(neighbors.length > 0)
 		{
             var r = FlxG.random.int(0, neighbors.length-1);
-			tryMove(neighbors[r].row - _tile.row, neighbors[r].column - _tile.column);
+			tryMove(neighbors[r].row - _tile.row, neighbors[r].column - _tile.column, function(){ checkMonsterTurn(); });
 		}
     }
 }

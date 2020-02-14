@@ -15,6 +15,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 	public var spawnRate:Int;
 
 	public var playState:PlayState;
+	public var playerTurn:Bool;
 
     public function new(state:PlayState, difficulty:Int, startLife:Float)
     {
@@ -33,6 +34,9 @@ class Level extends FlxTypedGroup<FlxSprite>
 
 		// Add Exit tile
 		replaceByExit(randomPassableTile());
+
+		// Set player turn
+		playerTurn = true;
 	}
 
     function generateLevel():Void
@@ -143,7 +147,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		switch(randomEnemy)
 		{
 			case 0: monster = new Monster.Bird(randomPassableTile());
-			case 1: monster = new Monster.Snake(randomPassableTile());
+			//case 1: monster = new Monster.Snake(randomPassableTile());
 			case 2: monster = new Monster.Blobby(randomPassableTile());
 			case 3: monster = new Monster.Eater(randomPassableTile());
 			case 4: monster = new Monster.Jester(randomPassableTile());
@@ -166,7 +170,6 @@ class Level extends FlxTypedGroup<FlxSprite>
 			t = randomPassableTile();
 		} while(t.hasTreasure != null); // avoid to spawn the player on a treasure
 		player = new Player(t, life);
-		monsters.push(player);
 
 		add(player);
 		for (i in 0...player.lifes.length)

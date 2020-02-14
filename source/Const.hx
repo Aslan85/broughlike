@@ -9,6 +9,7 @@ class Const
     // Game
     public static var MAXLEVELS = 6;
     public static var PLAYERSTARTLIFE = 3;
+    public static var MOVEMENTSPEED = 0.2;
 
     // Points
     public static var POINTSBYKILLNGENEMIES = 5;

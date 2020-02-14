@@ -12,7 +12,7 @@ class Player extends Monster
 
     override public function update(elapsed:Float):Void
     {
-        if(!_isDead)
+        if(!_isDead && _tile.level.playerTurn)
             movement();
 
         super.update(elapsed);
@@ -20,25 +20,21 @@ class Player extends Monster
 
     function movement():Void
     {
-        var didMove = false;
         if(FlxG.keys.anyJustPressed([UP,W]))
         {
-            didMove = tryMove(0, -1);
+            tryMove(0, -1, function(){ tick(); });
         } 
         if(FlxG.keys.anyJustPressed([DOWN,S]))
         {
-            didMove = tryMove(0, 1);
+            tryMove(0, 1, function(){ tick(); });
         } 
         if(FlxG.keys.anyJustPressed([LEFT,A]))
         {
-            didMove = tryMove(-1, 0);
+            tryMove(-1, 0, function(){ tick(); });
         } 
         if(FlxG.keys.anyJustPressed([RIGHT,D]))
         {
-            didMove = tryMove(1, 0);
+            tryMove(1, 0, function(){ tick(); });
         }
-
-        if(didMove)
-            tick();
     }
 }
