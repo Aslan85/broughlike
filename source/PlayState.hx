@@ -2,7 +2,9 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.util.FlxColor;
+import Enums.SoundType;
 
 class PlayState extends FlxState
 {
@@ -13,6 +15,12 @@ class PlayState extends FlxState
 	var _gameOverHud:GameOverHud;
 	var _level:Level;
 	var _showingGameOver:Bool;
+
+	var _sndHit1:FlxSound;
+	var _sndHit2:FlxSound;
+	var _sndTreasure:FlxSound;
+	var _sndNewLevel:FlxSound;
+	var _sndSpell:FlxSound;
 
 	override public function create():Void
 	{
@@ -26,6 +34,13 @@ class PlayState extends FlxState
 		
 		// Add camera
 		FlxG.camera.bgColor = FlxColor.fromRGB(68, 71, 89);
+
+		// Load sounds
+		_sndHit1 = FlxG.sound.load(AssetPaths.hit1__wav);
+		_sndHit2 = FlxG.sound.load(AssetPaths.hit2__wav);
+		_sndTreasure = FlxG.sound.load(AssetPaths.treasure__wav);
+		_sndNewLevel = FlxG.sound.load(AssetPaths.newLevel__wav);
+		_sndSpell = FlxG.sound.load(AssetPaths.spell__wav);
 
 		// Add UI
 		_hud = new Hud();
@@ -86,5 +101,17 @@ class PlayState extends FlxState
 		_showingGameOver = true;
 		_gameOverHud.showGameOver();
 		add(_gameOverHud);
+	}
+
+	public function playSound(s:SoundType):Void
+	{
+		switch(s)
+		{
+			case SoundType.hit1 : _sndHit1.play(true);
+			case SoundType.hit2 : _sndHit2.play(true);
+			case SoundType.treasure : _sndTreasure.play(true);
+			case SoundType.newLevel : _sndNewLevel.play(true);
+			case SoundType.spell : _sndSpell.play(true);
+		}
 	}
 }

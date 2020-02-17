@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import Enums.SoundType;
 
 class Tile extends FlxSprite
 {
@@ -91,6 +92,8 @@ class Floor extends Tile
         {
             if(hasTreasure != null)
             {
+                level.playState.playSound(SoundType.treasure);
+
                 hasTreasure.kill();
                 hasTreasure = null;
 
@@ -133,6 +136,7 @@ class Exit extends Tile
             else
             {
                 // Increase level
+                level.playState.playSound(SoundType.newLevel);
                 level.playState.addLevel();
                 level.playState.addScore(Const.POINTSBYLEVELING);
                 var lifeUp:Float = Math.min(Const.MAXHP, monster.hp +1);

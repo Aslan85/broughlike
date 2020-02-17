@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxTween;
+import Enums.SoundType;
 
 class Monster extends FlxSprite
 {
@@ -212,6 +213,11 @@ class Monster extends FlxSprite
 
     function hit(damage:Int):Void
     {
+        if(isPlayer)
+            _tile.level.playState.playSound(SoundType.hit1);
+        else
+            _tile.level.playState.playSound(SoundType.hit2);
+
         hp -= damage;
         hpCounter();
         if(hp <= 0.5)
