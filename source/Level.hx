@@ -28,12 +28,14 @@ class Level extends FlxTypedGroup<FlxSprite>
 
 		// Create Level
 		generateLevel();
-		generateTreasures();
 		addMonsters(difficulty);
 		addPlayer(startLife);
 
 		// Add Exit tile
 		replaceByExit(randomPassableTile());
+
+		// Add treasures
+		generateTreasures();
 
 		// Set player turn
 		playerTurn = true;
@@ -88,7 +90,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 			do
 			{
 				tile = randomPassableTile();
-			} while(tile.isExit); // avoid to spawn the treasure on an exit
+			} while(tile.isExit || tile.hasTreasure != null); // avoid to spawn the treasure on an exit
 			var treasure = new Treasure(tile);
 			add(treasure);
 			treasures.push(treasure);
