@@ -98,7 +98,7 @@ class Monster extends FlxSprite
         doStuff();
     }
 
-	function doStuff():Void
+	function doStuff(?callback):Void
 	{
 		var neighbors = _tile.getAdjacentPassableNeighbors();
         neighbors = neighbors.filter(function (t) return (t.monster == null || t.monster.isPlayer));
@@ -107,13 +107,14 @@ class Monster extends FlxSprite
 		{
 			neighbors.sort(function(a, b) return Std.int(a.dist(playerTile)) - Std.int(b.dist(playerTile)));
 			var newTile = neighbors[0];
-			tryMove(newTile.row - _tile.row, newTile.column - _tile.column, function(){ checkMonsterTurn(); });
+            tryMove(newTile.row - _tile.row, newTile.column - _tile.column, function(){ checkMonsterTurn(); if(callback != null) callback(); });
         }
         else
         {
             checkMonsterTurn();
+            if(callback != null) 
+                callback();
         }
-
     }
     
     function getPlayerTile():Tile
@@ -279,11 +280,15 @@ class Snake extends Monster
         super(AssetPaths.snake__png, tile, 1);
     }
 
-    override function doStuff():Void
+    override function doStuff(?callback):Void
     {
         _attackedThisTurn = false;
-        super.doStuff();
-
+        super.doStuff(function() {
+            repeatStuff();
+        });
+    }
+    function repeatStuff():Void
+    {
         if(!_attackedThisTurn)
         {
             super.doStuff();
@@ -298,7 +303,7 @@ class Blobby extends Monster
         super(AssetPaths.blobby__png, tile, 2);
     }
 
-    override function doStuff():Void
+    override function doStuff(?callback):Void
     {
         var startedStunned = _isStunned;
         super.doStuff();
@@ -316,7 +321,7 @@ class Eater extends Monster
         super(AssetPaths.eater__png, tile, 1);
     }
 
-    override function doStuff():Void
+    override function doStuff(?callback):Void
     {
         var neighbors = _tile.getAdjacentNeighbors().filter(function (t) return !t.passable && _tile.level.inBounds(t.row, t.column));
 		if(neighbors.length > 0)
@@ -349,7 +354,7 @@ class Jester extends Monster
         super(AssetPaths.jester__png, tile, 2);
     }
 
-    override function doStuff():Void
+    override function doStuff(?callback):Void
     {
         var neighbors = _tile.getAdjacentPassableNeighbors();
 		if(neighbors.length > 0)

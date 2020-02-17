@@ -146,12 +146,12 @@ class Level extends FlxTypedGroup<FlxSprite>
 	public function spawnMonster()
 	{
 		var randomEnemy = FlxG.random.int(0, 4);
-		//randomEnemy = 3;
+		//randomEnemy = 1;
 		var monster:Monster;
 		switch(randomEnemy)
 		{
 			case 0: monster = new Monster.Bird(randomPassableTile());
-			//case 1: monster = new Monster.Snake(randomPassableTile());
+			case 1: monster = new Monster.Snake(randomPassableTile());
 			case 2: monster = new Monster.Blobby(randomPassableTile());
 			case 3: monster = new Monster.Eater(randomPassableTile());
 			case 4: monster = new Monster.Jester(randomPassableTile());
