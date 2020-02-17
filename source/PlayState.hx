@@ -4,12 +4,14 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
+import flixel.math.FlxMath;
 import Enums.SoundType;
 
 class PlayState extends FlxState
 {
 	public var score:Int = 0;
 	public var difficulty:Int = 1;
+	public var nbSpells = 1;
 
 	var _hud:Hud;
 	var _gameOverHud:GameOverHud;
@@ -27,6 +29,7 @@ class PlayState extends FlxState
 		// Init
 		score = 0;
 		difficulty = 1;
+		nbSpells = 2;
 		_showingGameOver = false;
 
 		// Start Level
@@ -46,6 +49,7 @@ class PlayState extends FlxState
 		_hud = new Hud();
 		add(_hud);
 		_hud.updateHUD(difficulty, score);
+		updateSpellsHud();
 		_gameOverHud = new GameOverHud();
 		
 		super.create();
@@ -84,6 +88,8 @@ class PlayState extends FlxState
 
 	public function addLevel():Void
 	{
+		nbSpells++;
+		nbSpells = FlxMath.minInt(Const.MAXSPELLS, nbSpells);
 		difficulty++;
 		_hud.updateHUD(difficulty, score);
 	}
@@ -91,6 +97,11 @@ class PlayState extends FlxState
 	public function addScores(active:Bool):Void
 	{
 		_gameOverHud.addScore(score, active);
+	}
+
+	public function updateSpellsHud():Void
+	{
+		_hud.updateSpellsHUD(_level.player.spells);
 	}
 
 	public function showGameOver():Void

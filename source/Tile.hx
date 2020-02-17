@@ -141,6 +141,7 @@ class Exit extends Tile
                 level.playState.addScore(Const.POINTSBYLEVELING);
                 var lifeUp:Float = Math.min(Const.MAXHP, monster.hp +1);
                 level.playState.startLevel(lifeUp);
+                level.playState.updateSpellsHud();
             }
         }
     }

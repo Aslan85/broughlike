@@ -1,13 +1,14 @@
 package;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 
 class Player extends Monster
 {
     public function new(?tile:Tile, ?life:Float)
     {
         super(AssetPaths.player__png, tile, life, true);
+        
+        addSpell();
     }
 
     override public function update(elapsed:Float):Void
@@ -35,6 +36,17 @@ class Player extends Monster
         if(FlxG.keys.anyJustPressed([RIGHT,D]))
         {
             tryMove(1, 0, function(){ tick(); });
+        }
+
+        if(FlxG.keys.anyJustPressed([ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE]))
+        {
+            var idx = FlxG.keys.firstJustPressed() - 49;
+            if(idx < spells.length)
+                castSpell(idx, tick);
+            else
+                return;
+
+            _tile.level.playState.updateSpellsHud();
         }
     }
 }

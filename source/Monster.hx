@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxTween;
 import Enums.SoundType;
+import Enums.SpellName;
 
 class Monster extends FlxSprite
 {
@@ -11,6 +12,7 @@ class Monster extends FlxSprite
     public var isPlayer:Bool = false;
     public var hp:Float;
     public var onMovement:Bool;
+    public var spells:Array<Enums.SpellName>;
     
     var _maxHp:Int = Const.MAXHP;
     var _force:Int = Const.FORCE;
@@ -268,7 +270,36 @@ class Monster extends FlxSprite
         }
 
         checkMonsterTurn();
-	}
+    }
+    
+    public function addSpell()
+    {
+        if(spells != null)
+            spells = [];
+
+        var allSpells = SpellName.createAll();
+        spells = new Array<Enums.SpellName>();
+        for(i in 0 ... _tile.level.playState.nbSpells)
+        {
+            var newSpell = FlxG.random.int(0, allSpells.length-1);
+            spells.push(allSpells[newSpell]);
+        }
+    }
+
+    function castSpell(index:Int, ?callback):Void
+    {
+        _tile.level.playState.playSound(SoundType.spell);
+
+        switch(spells[index])
+        {
+            case SpellName.WOOP : trace("woop");
+            case SpellName.FACE : trace("face");
+            case SpellName.OCTOVAS : trace("octovas");
+        }
+
+        spells.remove(spells[index]);
+        callback();
+    }
 }
 
 class Bird extends Monster

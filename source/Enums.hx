@@ -7,3 +7,11 @@ enum SoundType
     newLevel;
     spell;
 }
+
+// Spells
+enum SpellName
+{
+    WOOP;
+    FACE;
+    OCTOVAS;
+}
