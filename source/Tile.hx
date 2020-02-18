@@ -94,6 +94,8 @@ class Floor extends Tile
             {
                 level.playState.playSound(SoundType.treasure);
 
+                level.player.addSpell();
+
                 hasTreasure.kill();
                 hasTreasure = null;
 
@@ -130,18 +132,17 @@ class Exit extends Tile
                 level.playState.addScores(true);
 
                 // Return to home title
-                // TODO : Game End Screen
                 FlxG.switchState(new MenuState());
             }
             else
             {
                 // Increase level
+                level.playState.saveSpells = level.player.spells;
                 level.playState.playSound(SoundType.newLevel);
                 level.playState.addLevel();
                 level.playState.addScore(Const.POINTSBYLEVELING);
                 var lifeUp:Float = Math.min(Const.MAXHP, monster.hp +1);
                 level.playState.startLevel(lifeUp);
-                level.playState.updateSpellsHud();
             }
         }
     }

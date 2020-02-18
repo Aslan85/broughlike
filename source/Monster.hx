@@ -292,18 +292,34 @@ class Monster extends FlxSprite
 
     // { region Spells
 
+    public function initSpell()
+    {
+        if(_tile.level.playState.saveSpells != null)
+            spells = _tile.level.playState.saveSpells;
+        else 
+        {
+            spells = new Array<Enums.SpellName>();
+            for(i in 1 ... Const.STARTNBSPELLS)
+            {
+                addSpell();
+            }
+        }
+    }
+
     public function addSpell()
     {
-        if(spells != null)
-            spells = [];
+        if(spells == null)
+            initSpell();
+
+        if(spells.length > Const.MAXSPELLS)
+            return;
 
         var allSpells = SpellName.createAll();
-        spells = new Array<Enums.SpellName>();
-        for(i in 0 ... _tile.level.playState.nbSpells)
-        {
-            var newSpell = FlxG.random.int(0, allSpells.length-1);
-            spells.push(allSpells[newSpell]);
-        }
+        var newSpell = FlxG.random.int(0, allSpells.length-1);
+        spells.push(allSpells[newSpell]);
+
+        if(isPlayer)
+            _tile.level.playState.updateSpellsHud();
     }
 
     function castSpell(index:Int, callback:()->Void):Void

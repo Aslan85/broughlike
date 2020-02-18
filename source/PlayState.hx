@@ -11,7 +11,7 @@ class PlayState extends FlxState
 {
 	public var score:Int = 0;
 	public var difficulty:Int = 1;
-	public var nbSpells = 1;
+	public var saveSpells:Array<Enums.SpellName>;
 
 	var _hud:Hud;
 	var _gameOverHud:GameOverHud;
@@ -29,7 +29,6 @@ class PlayState extends FlxState
 		// Init
 		score = 0;
 		difficulty = 1;
-		nbSpells = 2;
 		_showingGameOver = false;
 
 		// Start Level
@@ -49,8 +48,10 @@ class PlayState extends FlxState
 		_hud = new Hud();
 		add(_hud);
 		_hud.updateHUD(difficulty, score);
-		updateSpellsHud();
 		_gameOverHud = new GameOverHud();
+
+		// Add first spell
+		_level.player.addSpell();
 		
 		super.create();
 	}
@@ -88,8 +89,6 @@ class PlayState extends FlxState
 
 	public function addLevel():Void
 	{
-		nbSpells++;
-		nbSpells = FlxMath.minInt(Const.MAXSPELLS, nbSpells);
 		difficulty++;
 		_hud.updateHUD(difficulty, score);
 	}
