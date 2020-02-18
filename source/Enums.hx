@@ -12,6 +12,4 @@ enum SoundType
 enum SpellName
 {
     WOOP;
-    FACE;
-    OCTOVAS;
 }

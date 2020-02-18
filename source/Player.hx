@@ -42,7 +42,7 @@ class Player extends Monster
         {
             var idx = FlxG.keys.firstJustPressed() - 49;
             if(idx < spells.length)
-                castSpell(idx, tick);
+                castSpell(idx, function(){ tick(); });
             else
                 return;
 

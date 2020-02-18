@@ -47,7 +47,7 @@ class Hud extends FlxTypedGroup<FlxSprite>
         _txtSpells = new Array<FlxText>();
         for(i in 0 ... spells.length)
         {
-            _txtSpells[i] = new FlxText(_xPos, 30 + 10*i, 0, "" +(i+1) +" : " +spells[i], 6);
+            _txtSpells[i] = new FlxText(_xPos, 30 + 10*i, 0, "" +(i+1) +") " +spells[i], 6);
             add(_txtSpells[i]);
         } 
     }

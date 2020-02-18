@@ -131,7 +131,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		do
 		{
 			t = getTile(FlxG.random.int(0, Const.NUMTILES), FlxG.random.int(0, Const.NUMTILES));
-		} while(!t.passable || t.monster != null);
+		} while(!t.passable || t.monster != null || t.isExit);
 			
 		return t;
 	}

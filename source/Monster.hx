@@ -22,6 +22,8 @@ class Monster extends FlxSprite
     var _teleportCounter:Int = Const.TELEPORTCOUNTER;
     var _tile:Tile;
 
+    // { region Init
+
     public function new(?path:String=AssetPaths.floor__png, ?tile:Tile, ?health:Float=1, ?player = false)
     {
         hp = health;
@@ -59,25 +61,36 @@ class Monster extends FlxSprite
         }
     }
 
-    override public function update(elapsed:Float):Void
+    // } end region
+
+    // { region AI
+    
+    function tick()
     {
-        super.update(elapsed);
-    }
-
-	function hpCounter()
-	{
-        // remove old life
-        for(l in lifes)
+        var total = _tile.level.monsters.length;
+        var i = total;
+        while(i >= 0)
         {
-            l.kill();
+            if(_tile.level.monsters[i] != null)
+            {
+                if(!_tile.level.monsters[i]._isDead)
+                    _tile.level.monsters[i].aiMove();
+                else
+                    _tile.level.monsters.splice(i, 1);
+            }
+            i--;
+        }
+        
+        _tile.level.spawnCounter--;
+        if(_tile.level.spawnCounter < 0)
+        {
+            _tile.level.spawnMonster();
+            _tile.level.spawnCounter = _tile.level.spawnRate;
+            _tile.level.spawnRate--;
         }
 
-        // add lifes
-		for(i in 0 ... Std.int(hp))
-		{
-            lifes[i].revive();
-        }
-	}
+        checkMonsterTurn();
+    }
 
     public function aiMove():Void
     {
@@ -127,8 +140,28 @@ class Monster extends FlxSprite
         else
             return null;
     }
+    
+    function checkMonsterTurn():Void
+    {
+        for(m in _tile.level.monsters)
+        {
+            if(m.onMovement)
+                return;
+        }
+        _tile.level.playerTurn = true;
+    }
 
-    function tryMove(dx:Int, dy:Int, ?callback):Void
+    function activeMonsterAfterTeleport():Void
+    {
+        animation.play("idle");
+        hpCounter();
+    }
+
+    // } end region
+
+    // { region Movement
+
+    function tryMove(dx:Int, dy:Int, callback:()->Void):Void
     {
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
@@ -140,25 +173,7 @@ class Monster extends FlxSprite
                     _tile.level.playerTurn = false;
                 }
 
-                if(_tile != null)
-                {
-                    _tile.monster = null;
-                }
-                _tile = newTile;
-                newTile.monster = this;
-        
-                onMovement = true;
-                FlxTween.tween(this, { x: _tile.x, y: _tile.y }, Const.MOVEMENTSPEED, { onComplete: function(_)
-                    {        
-                        // Check exit tile
-                        _tile.stepOn(this);
-                        onMovement = false;
-
-                        if(_tile.isExit && isPlayer)
-                            return;
-                        
-                        callback();
-                    }}); 
+                move(newTile, callback);
             }
             else
             {
@@ -191,20 +206,46 @@ class Monster extends FlxSprite
         }
     }
 
-    function checkMonsterTurn()
+    function move(newTile:Tile, callback:()->Void):Void
     {
-        for(m in _tile.level.monsters)
+        if(_tile != null)
         {
-            if(m.onMovement)
-                return;
+            _tile.monster = null;
         }
-        _tile.level.playerTurn = true;
+        _tile = newTile;
+        newTile.monster = this;
+
+        onMovement = true;
+        FlxTween.tween(this, { x: _tile.x, y: _tile.y }, Const.MOVEMENTSPEED, { onComplete: function(_)
+            {        
+                // Check exit tile
+                _tile.stepOn(this);
+                onMovement = false;
+
+                if(_tile.isExit && isPlayer)
+                    return;
+                
+                callback();
+            }}); 
     }
 
-    function activeMonsterAfterTeleport()
+    // } end region
+
+    // { region Health
+
+	function hpCounter()
     {
-        animation.play("idle");
-        hpCounter();
+        // remove old life
+        for(l in lifes)
+        {
+            l.kill();
+        }
+
+        // add lifes
+        for(i in 0 ... Std.int(hp))
+        {
+            lifes[i].revive();
+        }
     }
 
     function heal(recover:Float):Void
@@ -245,33 +286,10 @@ class Monster extends FlxSprite
         }
     }
 
-	function tick()
-	{
-        var total = _tile.level.monsters.length;
-        var i = total;
-		while(i >= 0)
-		{
-            if(_tile.level.monsters[i] != null)
-            {
-                if(!_tile.level.monsters[i]._isDead)
-				    _tile.level.monsters[i].aiMove();
-			    else
-				    _tile.level.monsters.splice(i, 1);
-            }
-			i--;
-        }
-        
-        _tile.level.spawnCounter--;
-        if(_tile.level.spawnCounter < 0)
-        {
-            _tile.level.spawnMonster();
-            _tile.level.spawnCounter = _tile.level.spawnRate;
-            _tile.level.spawnRate--;
-        }
+    // } end region
 
-        checkMonsterTurn();
-    }
-    
+    // { region Spells
+
     public function addSpell()
     {
         if(spells != null)
@@ -286,21 +304,27 @@ class Monster extends FlxSprite
         }
     }
 
-    function castSpell(index:Int, ?callback):Void
+    function castSpell(index:Int, callback:()->Void):Void
     {
         _tile.level.playState.playSound(SoundType.spell);
 
         switch(spells[index])
         {
-            case SpellName.WOOP : trace("woop");
-            case SpellName.FACE : trace("face");
-            case SpellName.OCTOVAS : trace("octovas");
+            case SpellName.WOOP : spellWoop(callback);
         }
 
         spells.remove(spells[index]);
-        callback();
     }
+
+    function spellWoop(?callback:()->Void)
+    {
+        move(_tile.level.randomPassableTile(), callback);
+    }
+
+    // } end region
 }
+
+// { region Monsters
 
 class Bird extends Monster
 {
@@ -401,3 +425,5 @@ class Jester extends Monster
 		}
     }
 }
+
+// } end region
