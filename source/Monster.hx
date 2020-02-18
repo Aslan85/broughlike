@@ -198,7 +198,8 @@ class Monster extends FlxSprite
                                     if(newTile.monster != null)
                                         newTile.monster.hit(_force);
                                     onMovement = false;
-                                    callback();
+                                    if(callback != null)
+                                        callback();
                                 }});
                         }});   
                 }
@@ -225,7 +226,8 @@ class Monster extends FlxSprite
                 if(_tile.isExit && isPlayer)
                     return;
                 
-                callback();
+                if(callback != null)
+                    callback();
             }}); 
     }
 
@@ -311,6 +313,8 @@ class Monster extends FlxSprite
         switch(spells[index])
         {
             case SpellName.WOOP : spellWoop(callback);
+            case SpellName.QUAKE : spellQuake(callback);
+            case SpellName.MAELSTROM : spellMaelstrom(callback);
         }
 
         spells.remove(spells[index]);
@@ -319,6 +323,39 @@ class Monster extends FlxSprite
     function spellWoop(?callback:()->Void)
     {
         move(_tile.level.randomPassableTile(), callback);
+    }
+
+    function spellQuake(?callback:()->Void)
+    {
+        for(x in _tile.level.tiles)
+        {
+            for(t in x)
+            {
+                if(t == null)
+                    continue;
+
+                if(t.monster != null)
+                {
+                    if(t.monster.isPlayer)
+                        continue;
+
+                    var numWalls = 4 - t.getAdjacentPassableNeighbors().length;
+                    t.monster.hit(numWalls);
+                }
+            }
+        }
+        FlxG.camera.shake(0.015, 0.2, callback);
+    }
+
+    function spellMaelstrom(?callback:()->Void)
+    {
+        for(i in 0 ... _tile.level.monsters.length)
+        {
+            if(i == _tile.level.monsters.length)
+                _tile.level.monsters[i].move(_tile.level.randomPassableTile(), callback);
+            else
+                _tile.level.monsters[i].move(_tile.level.randomPassableTile(), null);
+        }
     }
 
     // } end region

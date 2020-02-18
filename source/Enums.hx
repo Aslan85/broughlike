@@ -12,4 +12,6 @@ enum SoundType
 enum SpellName
 {
     WOOP;
+    QUAKE;
+    MAELSTROM;
 }
