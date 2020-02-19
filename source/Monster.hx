@@ -311,7 +311,7 @@ class Monster extends FlxSprite
         if(spells == null)
             initSpell();
 
-        if(spells.length > Const.MAXSPELLS)
+        if(spells.length >= Const.MAXSPELLS)
             return;
 
         var allSpells = SpellName.createAll();
@@ -330,7 +330,7 @@ class Monster extends FlxSprite
         {
             case SpellName.WOOP : spellWoop(callback);
             case SpellName.QUAKE : spellQuake(callback);
-            case SpellName.MAELSTROM : spellMaelstrom(callback);
+            case SpellName.MAELST : spellMaelst(callback);
         }
 
         spells.remove(spells[index]);
@@ -352,9 +352,6 @@ class Monster extends FlxSprite
 
                 if(t.monster != null)
                 {
-                    if(t.monster.isPlayer)
-                        continue;
-
                     var numWalls = 4 - t.getAdjacentPassableNeighbors().length;
                     t.monster.hit(numWalls);
                 }
@@ -363,7 +360,7 @@ class Monster extends FlxSprite
         FlxG.camera.shake(0.015, 0.2, callback);
     }
 
-    function spellMaelstrom(?callback:()->Void)
+    function spellMaelst(?callback:()->Void)
     {
         for(i in 0 ... _tile.level.monsters.length)
         {

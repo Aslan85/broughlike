@@ -19,11 +19,11 @@ class Hud extends FlxTypedGroup<FlxSprite>
         _xPos = Const.NUMTILES * Const.TILESIZE;
 
         _txtDifficulty = new FlxText(_xPos, 0, 0, "Level : 1", 8);
-        _txtDifficulty.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
+        //_txtDifficulty.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
         add(_txtDifficulty);
 
         _txtScore = new FlxText(_xPos, 10, 0, "Score : 0", 8);
-        _txtScore.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
+        //_txtScore.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
         add(_txtScore);
     }
 
@@ -47,7 +47,8 @@ class Hud extends FlxTypedGroup<FlxSprite>
         _txtSpells = new Array<FlxText>();
         for(i in 0 ... spells.length)
         {
-            _txtSpells[i] = new FlxText(_xPos, 30 + 10*i, 0, "" +(i+1) +") " +spells[i], 6);
+            _txtSpells[i] = new FlxText(_xPos, 30 + 10*i, 0, "" +(i+1) +") " +spells[i], 8);
+            _txtSpells[i].color = FlxColor.PINK;
             add(_txtSpells[i]);
         } 
     }

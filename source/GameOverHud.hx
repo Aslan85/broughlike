@@ -30,9 +30,10 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
         add(_txtTitle);
         
 
-        var _txtRestart = new FlxText(0, 125, 0, "Press 'R' to restart", 10);
+        var _txtRestart = new FlxText(0, 0, 0, "Press 'R' to restart", 8);
         _txtRestart.alignment = CENTER;
         _txtRestart.screenCenter(X);
+        _txtRestart.y = FlxG.height - _txtRestart.height;
         FlxFlicker.flicker(_txtRestart, 0, 0.5);
         add(_txtRestart);
 
