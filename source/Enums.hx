@@ -13,5 +13,5 @@ enum SpellName
 {
     WOOP;
     QUAKE;
-    MAELST;
+    MAELSTROM;
 }

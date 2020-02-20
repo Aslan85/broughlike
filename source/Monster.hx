@@ -330,7 +330,7 @@ class Monster extends FlxSprite
         {
             case SpellName.WOOP : spellWoop(callback);
             case SpellName.QUAKE : spellQuake(callback);
-            case SpellName.MAELST : spellMaelst(callback);
+            case SpellName.MAELSTROM : spellMaelstrom(callback);
         }
 
         spells.remove(spells[index]);
@@ -360,7 +360,7 @@ class Monster extends FlxSprite
         FlxG.camera.shake(0.015, 0.2, callback);
     }
 
-    function spellMaelst(?callback:()->Void)
+    function spellMaelstrom(?callback:()->Void)
     {
         for(i in 0 ... _tile.level.monsters.length)
         {

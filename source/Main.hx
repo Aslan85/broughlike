@@ -9,6 +9,6 @@ class Main extends Sprite
 	{
 		super();
 
-		addChild(new FlxGame(Const.TILESIZE*(Const.NUMTILES+Const.UIWIDTH), Const.TILESIZE*Const.NUMTILES, MenuState));
+		addChild(new FlxGame(Const.TILESIZE*Const.NUMTILES+Const.UIWIDTH, Const.TILESIZE*Const.NUMTILES, MenuState));
 	}
 }
