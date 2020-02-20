@@ -136,7 +136,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		return t;
 	}
 	
-	function addMonsters(level:Int)
+	function addMonsters(level:Int):Void
 	{
 		var numMonsters = level+1;
 		for (i in 0...numMonsters)
@@ -145,7 +145,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		}
 	}
 	
-	public function spawnMonster()
+	public function spawnMonster():Void
 	{
 		var randomEnemy = FlxG.random.int(0, 4);
 		//randomEnemy = 1;
@@ -168,7 +168,7 @@ class Level extends FlxTypedGroup<FlxSprite>
 		}
 	}
 
-	function addPlayer(life:Float)
+	function addPlayer(life:Float):Void
 	{
 		var t:Tile;
 		do
@@ -182,5 +182,11 @@ class Level extends FlxTypedGroup<FlxSprite>
 		{
 			add(player.lifes[i]);
 		}
+	}
+
+	public function addEffect(effectName:Enums.EffectName, tile:Tile, timer:Float):Void
+	{
+		var eff = new TileEffect(effectName, tile, timer);
+		add(eff);
 	}
 }

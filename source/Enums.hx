@@ -17,3 +17,12 @@ enum SpellName
     MULLIGAN;
     AURA;
 }
+
+// Effects
+enum EffectName
+{
+    heal;
+    explosion;
+    hBoltEffect;
+    vBoltEffect;
+}

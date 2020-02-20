@@ -1,5 +1,6 @@
 package;
 
+import Enums.EffectName;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxTween;
@@ -405,6 +406,7 @@ class Monster extends FlxSprite
             if(t.monster != null)
                 t.monster.heal(1);
         }
+        _tile.level.addEffect(EffectName.heal, _tile, 30);
         heal(1);
         
         callback();
