@@ -7,6 +7,9 @@ class Player extends Monster
     public function new(?tile:Tile, ?life:Float)
     {
         super(AssetPaths.player__png, tile, life, true);
+        
+        if(_tile.level.playState.isHudActive())
+            initSpell();
     }
 
     override public function update(elapsed:Float):Void

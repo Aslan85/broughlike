@@ -103,6 +103,12 @@ class PlayState extends FlxState
 		_hud.updateSpellsHUD(_level.player.spells);
 	}
 
+	public function isHudActive():Bool
+	{
+		if(_hud == null) return false;
+		else return true;
+	}
+
 	public function showGameOver():Void
 	{
 		if(_showingGameOver)

@@ -331,9 +331,11 @@ class Monster extends FlxSprite
             case SpellName.WOOP : spellWoop(callback);
             case SpellName.QUAKE : spellQuake(callback);
             case SpellName.MAELSTROM : spellMaelstrom(callback);
+            case SpellName.MULLIGAN : spellMulligan(index, callback); return;
         }
 
         spells.remove(spells[index]);
+        _tile.level.playState.updateSpellsHud();
     }
 
     function spellWoop(?callback:()->Void)
@@ -369,6 +371,14 @@ class Monster extends FlxSprite
             else
                 _tile.level.monsters[i].move(_tile.level.randomPassableTile(), null);
         }
+    }
+
+    function spellMulligan(index:Int, ?callback:()->Void)
+    {
+        spells.remove(spells[index]);
+        _tile.level.playState.updateSpellsHud();
+        _tile.level.playState.saveSpells = spells;
+        _tile.level.playState.startLevel(hp);
     }
 
     // } end region

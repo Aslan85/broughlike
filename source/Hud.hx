@@ -35,6 +35,9 @@ class Hud extends FlxTypedGroup<FlxSprite>
 
     public function updateSpellsHUD(spells:Array<Enums.SpellName>):Void
     {
+        if(spells == null)
+            return;
+
         if(_txtSpells != null)
         {
             for(i in 0 ... _txtSpells.length)

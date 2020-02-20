@@ -14,4 +14,5 @@ enum SpellName
     WOOP;
     QUAKE;
     MAELSTROM;
+    MULLIGAN;
 }
