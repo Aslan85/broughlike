@@ -15,4 +15,5 @@ enum SpellName
     QUAKE;
     MAELSTROM;
     MULLIGAN;
+    AURA;
 }

@@ -326,12 +326,26 @@ class Monster extends FlxSprite
     {
         _tile.level.playState.playSound(SoundType.spell);
 
-        switch(spells[index])
+        if(spells[index] == SpellName.WOOP)
         {
-            case SpellName.WOOP : spellWoop(callback);
-            case SpellName.QUAKE : spellQuake(callback);
-            case SpellName.MAELSTROM : spellMaelstrom(callback);
-            case SpellName.MULLIGAN : spellMulligan(index, callback); return;
+            spellWoop(callback);
+        }
+        else if(spells[index] == SpellName.QUAKE)
+        {
+            spellQuake(callback);
+        }
+        else if(spells[index] == SpellName.MAELSTROM)
+        {
+            spellMaelstrom(callback);
+        }
+        else if(spells[index] == SpellName.MULLIGAN)
+        {
+            spellMulligan(index, callback);
+            return;
+        }
+        else if(spells[index] == SpellName.AURA)
+        {
+            spellAura(callback);
         }
 
         spells.remove(spells[index]);
@@ -376,9 +390,24 @@ class Monster extends FlxSprite
     function spellMulligan(index:Int, ?callback:()->Void)
     {
         spells.remove(spells[index]);
-        _tile.level.playState.updateSpellsHud();
-        _tile.level.playState.saveSpells = spells;
+        if(isPlayer)
+        {
+            _tile.level.playState.updateSpellsHud();
+            _tile.level.playState.saveSpells = spells;
+        }
         _tile.level.playState.startLevel(hp);
+    }
+
+    function spellAura(?callback:()->Void)
+    {
+        for(t in _tile.getAdjacentNeighbors())
+        {
+            if(t.monster != null)
+                t.monster.heal(1);
+        }
+        heal(1);
+        
+        callback();
     }
 
     // } end region
