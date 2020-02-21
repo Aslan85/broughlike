@@ -16,6 +16,7 @@ enum SpellName
     MAELSTROM;
     MULLIGAN;
     AURA;
+    DASH;
 }
 
 // Effects

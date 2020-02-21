@@ -1,11 +1,12 @@
 package;
 
-import Enums.EffectName;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.tweens.FlxTween;
 import Enums.SoundType;
 import Enums.SpellName;
+import Enums.EffectName;
 
 class Monster extends FlxSprite
 {
@@ -21,6 +22,7 @@ class Monster extends FlxSprite
     var _attackedThisTurn:Bool = false;
     var _isStunned:Bool = false;
     var _teleportCounter:Int = Const.TELEPORTCOUNTER;
+    var _lastMove:FlxPoint;
     var _tile:Tile;
 
     // { region Init
@@ -32,6 +34,7 @@ class Monster extends FlxSprite
         _tile = tile;
         isPlayer = player;
         onMovement = false;
+        _lastMove = new FlxPoint(-1, 0);
 
         // Draw life
         lifes = new Array<Life>();
@@ -167,6 +170,8 @@ class Monster extends FlxSprite
         var newTile = _tile.getNeighbor(dx, dy);
         if(newTile.passable)
         {
+            _lastMove.set(dx, dy);
+
             if(newTile.monster == null)
             {
                 if(isPlayer)
@@ -348,6 +353,10 @@ class Monster extends FlxSprite
         {
             spellAura(callback);
         }
+        else if(spells[index] == SpellName.DASH)
+        {
+            spellDash(callback);
+        }
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -408,8 +417,44 @@ class Monster extends FlxSprite
         }
         _tile.level.addEffect(EffectName.heal, _tile, 30);
         heal(1);
-        
+
         callback();
+    }
+
+    function spellDash(?callback:()->Void)
+    {
+        var newTile = _tile;
+        while(true)
+        {
+            var testTile = newTile.getNeighbor(Std.int(_lastMove.x), Std.int(_lastMove.y));
+            if(testTile.passable && testTile.monster == null)
+            {
+                newTile = testTile;
+            }
+            else
+            {
+                break;
+            }
+        }
+        if(_tile != newTile)
+        {
+            move(newTile, () -> { 
+                for(t in newTile.getAdjacentNeighbors())
+                {
+                    if(t.monster != null)
+                    {
+                        _tile.level.addEffect(EffectName.explosion, t, 30);
+                        t.monster._isStunned = true;
+                        t.monster.hit(1);
+                    }
+                }
+                callback();
+            });
+        }
+        else
+        {
+            callback();
+        }
     }
 
     // } end region
