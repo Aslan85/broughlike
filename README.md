@@ -1,4 +1,3 @@
 # BroughLike
 
-BroughLike tutorial did in Haxe with Kha
-https://nluqo.github.io/broughlike-tutorial/
+Following [BroughLike tutorial](https://nluqo.github.io/broughlike-tutorial/) but using the [HaxeFlixel](https://haxeflixel.com/) game engine instead.
