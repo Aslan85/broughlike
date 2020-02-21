@@ -4,7 +4,6 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
-import flixel.math.FlxMath;
 import Enums.SoundType;
 
 class PlayState extends FlxState
@@ -15,14 +14,17 @@ class PlayState extends FlxState
 
 	var _hud:Hud;
 	var _gameOverHud:GameOverHud;
+	var _winHud:WinHud;
 	var _level:Level;
 	var _showingGameOver:Bool;
+	var _showingWin:Bool;
 
 	var _sndHit1:FlxSound;
 	var _sndHit2:FlxSound;
 	var _sndTreasure:FlxSound;
 	var _sndNewLevel:FlxSound;
 	var _sndSpell:FlxSound;
+	var _sndWin:FlxSound;
 
 	override public function create():Void
 	{
@@ -30,6 +32,7 @@ class PlayState extends FlxState
 		score = 0;
 		difficulty = 1;
 		_showingGameOver = false;
+		_showingWin = false;
 
 		// Start Level
 		startLevel(Const.PLAYERSTARTLIFE);
@@ -43,12 +46,14 @@ class PlayState extends FlxState
 		_sndTreasure = FlxG.sound.load(AssetPaths.treasure__wav);
 		_sndNewLevel = FlxG.sound.load(AssetPaths.newLevel__wav);
 		_sndSpell = FlxG.sound.load(AssetPaths.spell__wav);
+		_sndWin = FlxG.sound.load(AssetPaths.win__wav);
 
 		// Add UI
 		_hud = new Hud();
 		add(_hud);
 		_hud.updateHUD(difficulty, score);
 		_gameOverHud = new GameOverHud();
+		_winHud = new WinHud();
 
 		// Add first spell
 		_level.player.addSpell();
@@ -119,6 +124,16 @@ class PlayState extends FlxState
 		add(_gameOverHud);
 	}
 
+	public function showWin():Void
+	{
+		if(_showingWin)
+			return;
+		
+		_showingWin = true;
+		_winHud.showWin();
+		add(_winHud);
+	}
+
 	public function playSound(s:SoundType):Void
 	{
 		switch(s)
@@ -128,6 +143,7 @@ class PlayState extends FlxState
 			case SoundType.treasure : _sndTreasure.play(true);
 			case SoundType.newLevel : _sndNewLevel.play(true);
 			case SoundType.spell : _sndSpell.play(true);
+			case SoundType.win : _sndSpell.play(true);
 		}
 	}
 }

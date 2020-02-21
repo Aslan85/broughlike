@@ -8,6 +8,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
+import flixel.ui.FlxButton;
 import flixel.effects.FlxFlicker;
 import haxe.Serializer;
 import haxe.Unserializer;
@@ -29,16 +30,30 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
         _txtTitle.screenCenter(X);
         add(_txtTitle);
         
-
+        /*
         var _txtRestart = new FlxText(0, 0, 0, "Press 'R' to restart", 8);
         _txtRestart.alignment = CENTER;
         _txtRestart.screenCenter(X);
         _txtRestart.y = FlxG.height - _txtRestart.height;
         FlxFlicker.flicker(_txtRestart, 0, 0.5);
         add(_txtRestart);
+        */
+        
+        // Restart Button
+        var _btnRestart = new FlxButton(0, 0, "Restart", clickRestart);
+        _btnRestart.screenCenter(X);
+        _btnRestart.y = FlxG.height - _btnRestart.height;
+        add(_btnRestart);
 
-        active = false;
         visible = false;
+    }
+    
+    function clickRestart()
+    {
+        FlxG.camera.fade(FlxColor.BLACK, .33, false, function()
+        {
+            FlxG.switchState(new PlayState());
+        });
     }
 
     public function showGameOver():Void
@@ -53,7 +68,7 @@ class GameOverHud extends FlxTypedGroup<FlxSprite>
         var scores:Array<UserSaveData> = getScore();
         if(scores != null)
         {
-            var _txtScoresTitle = new FlxText(0, 40, 0, rightPad(["RUN", "SCORE", "TOTAL"]), 8);
+            var _txtScoresTitle = new FlxText(0, 34, 0, rightPad(["RUN", "SCORE", "TOTAL"]), 8);
             _txtScoresTitle.alignment = CENTER;
             _txtScoresTitle.screenCenter(X);
             add(_txtScoresTitle);

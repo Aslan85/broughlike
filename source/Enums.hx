@@ -6,6 +6,7 @@ enum SoundType
     treasure;
     newLevel;
     spell;
+    win;
 }
 
 // Spells

@@ -131,8 +131,9 @@ class Exit extends Tile
                 // Add run information
                 level.playState.addScores(true);
 
-                // Return to home title
-                FlxG.switchState(new MenuState());
+                // Show Win Screen
+                level.playState.playSound(SoundType.win);
+                level.playState.showWin();
             }
             else
             {
