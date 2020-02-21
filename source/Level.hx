@@ -91,11 +91,16 @@ class Level extends FlxTypedGroup<FlxSprite>
 			{
 				tile = randomPassableTile();
 			} while(tile.isExit || tile.hasTreasure != null); // avoid to spawn the treasure on an exit
-			var treasure = new Treasure(tile);
-			add(treasure);
-			treasures.push(treasure);
-			tile.hasTreasure = treasure;
+			createTreasure(tile);
 		}
+	}
+
+	public function createTreasure(tile:Tile):Void
+	{		
+		var treasure = new Treasure(tile);
+		add(treasure);
+		treasures.push(treasure);
+		tile.hasTreasure = treasure;
 	}
 
 	public function inBounds(x:Int, y:Int):Bool

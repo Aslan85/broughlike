@@ -18,6 +18,7 @@ enum SpellName
     AURA;
     DASH;
     DIG;
+    KINGMAKER;
 }
 
 // Effects

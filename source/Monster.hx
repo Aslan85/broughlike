@@ -361,6 +361,10 @@ class Monster extends FlxSprite
         {
             spellDig(callback);
         }
+        else if(spells[index] == SpellName.KINGMAKER)
+        {
+            spellKingmaker(callback);
+        }
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -476,6 +480,16 @@ class Monster extends FlxSprite
         }
         _tile.level.addEffect(EffectName.heal, _tile, 30);
         heal(2);
+        callback();
+    }
+
+    function spellKingmaker(?callback:()->Void)
+    {
+        for(m in _tile.level.monsters)
+        {
+            m.heal(1);
+            _tile.level.createTreasure(m._tile);
+        }
         callback();
     }
 
