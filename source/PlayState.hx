@@ -143,7 +143,7 @@ class PlayState extends FlxState
 			case SoundType.treasure : _sndTreasure.play(true);
 			case SoundType.newLevel : _sndNewLevel.play(true);
 			case SoundType.spell : _sndSpell.play(true);
-			case SoundType.win : _sndSpell.play(true);
+			case SoundType.win : _sndWin.play(true);
 		}
 	}
 }
