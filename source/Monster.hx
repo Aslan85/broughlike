@@ -365,6 +365,10 @@ class Monster extends FlxSprite
         {
             spellKingmaker(callback);
         }
+        else if(spells[index] == SpellName.ALCHEMY)
+        {
+            spellAlchemy(callback);
+        }
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -489,6 +493,19 @@ class Monster extends FlxSprite
         {
             m.heal(1);
             _tile.level.createTreasure(m._tile);
+        }
+        callback();
+    }
+
+    function spellAlchemy(?callback:()->Void)
+    {
+        for(t in _tile.getAdjacentNeighbors())
+        {
+            if(!t.passable && _tile.level.inBounds(t.row, t.column))
+            {
+                _tile.level.replaceByFloor(t);
+                _tile.level.createTreasure(_tile.level.getTile(t.row, t.column));
+            }
         }
         callback();
     }

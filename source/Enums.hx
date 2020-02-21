@@ -19,6 +19,7 @@ enum SpellName
     DASH;
     DIG;
     KINGMAKER;
+    ALCHEMY;
 }
 
 // Effects
