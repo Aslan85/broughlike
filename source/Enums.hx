@@ -21,6 +21,7 @@ enum SpellName
     KINGMAKER;
     ALCHEMY;
     POWER;
+    BRAVERY;
 }
 
 // Effects

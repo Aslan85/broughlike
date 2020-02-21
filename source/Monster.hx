@@ -24,6 +24,7 @@ class Monster extends FlxSprite
     var _teleportCounter:Int = Const.TELEPORTCOUNTER;
     var _lastMove:FlxPoint;
     var _bonusAttack:Int;
+    var _shield:Int;
     var _tile:Tile;
 
     // { region Init
@@ -32,11 +33,12 @@ class Monster extends FlxSprite
     {
         hp = health;
         tile.monster = this;
-        _tile = tile;
         isPlayer = player;
         onMovement = false;
         _lastMove = new FlxPoint(-1, 0);
         _bonusAttack = 0;
+        _shield = 0;
+        _tile = tile;
 
         // Draw life
         lifes = new Array<Life>();
@@ -173,6 +175,8 @@ class Monster extends FlxSprite
         if(newTile.passable)
         {
             _lastMove.set(dx, dy);
+            if(_shield > 0)
+                _shield--;
 
             if(newTile.monster == null)
             {
@@ -269,6 +273,9 @@ class Monster extends FlxSprite
 
     function hit(damage:Int):Void
     {
+        if(_shield > 0)
+            return;
+
         if(isPlayer)
             _tile.level.playState.playSound(SoundType.hit1);
         else
@@ -378,6 +385,11 @@ class Monster extends FlxSprite
         {
             spellPower(callback);
         }
+        else if(spells[index] == SpellName.BRAVERY)
+        {
+            spellBravery(callback);
+        }
+
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -522,6 +534,12 @@ class Monster extends FlxSprite
     function spellPower(?callback:()->Void)
     {
         _bonusAttack = 5;
+        callback();
+    }
+
+    function spellBravery(?callback:()->Void)
+    {
+        _shield = 2;
         callback();
     }
 
