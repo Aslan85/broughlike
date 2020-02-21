@@ -20,6 +20,7 @@ enum SpellName
     DIG;
     KINGMAKER;
     ALCHEMY;
+    POWER;
 }
 
 // Effects

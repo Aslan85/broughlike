@@ -23,6 +23,7 @@ class Monster extends FlxSprite
     var _isStunned:Bool = false;
     var _teleportCounter:Int = Const.TELEPORTCOUNTER;
     var _lastMove:FlxPoint;
+    var _bonusAttack:Int;
     var _tile:Tile;
 
     // { region Init
@@ -35,6 +36,7 @@ class Monster extends FlxSprite
         isPlayer = player;
         onMovement = false;
         _lastMove = new FlxPoint(-1, 0);
+        _bonusAttack = 0;
 
         // Draw life
         lifes = new Array<Life>();
@@ -202,7 +204,10 @@ class Monster extends FlxSprite
                             FlxTween.tween(this, { x: origin.x, y: origin.y }, Const.MOVEMENTSPEED/2, { onComplete: function(_)
                                 {
                                     if(newTile.monster != null)
-                                        newTile.monster.hit(_force);
+                                    {
+                                        newTile.monster.hit(_force + _bonusAttack);
+                                        _bonusAttack = 0;
+                                    }
                                     onMovement = false;
                                     if(callback != null)
                                         callback();
@@ -369,6 +374,10 @@ class Monster extends FlxSprite
         {
             spellAlchemy(callback);
         }
+        else if(spells[index] == SpellName.POWER)
+        {
+            spellPower(callback);
+        }
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -507,6 +516,12 @@ class Monster extends FlxSprite
                 _tile.level.createTreasure(_tile.level.getTile(t.row, t.column));
             }
         }
+        callback();
+    }
+
+    function spellPower(?callback:()->Void)
+    {
+        _bonusAttack = 5;
         callback();
     }
 
