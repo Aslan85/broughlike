@@ -357,6 +357,10 @@ class Monster extends FlxSprite
         {
             spellDash(callback);
         }
+        else if(spells[index] == SpellName.DIG)
+        {
+            spellDig(callback);
+        }
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
@@ -455,6 +459,24 @@ class Monster extends FlxSprite
         {
             callback();
         }
+    }
+
+    function spellDig(?callback:()->Void)
+    {
+        for(i in 1 ... _tile.level.tiles.length -1)
+        {
+            for(j in 1 ... _tile.level.tiles[i].length -2)
+            {
+                var t = _tile.level.getTile(i, j);
+                if(!t.passable)
+                {
+                    _tile.level.replaceByFloor(t);
+                }
+            }
+        }
+        _tile.level.addEffect(EffectName.heal, _tile, 30);
+        heal(2);
+        callback();
     }
 
     // } end region

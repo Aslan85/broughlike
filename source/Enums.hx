@@ -17,6 +17,7 @@ enum SpellName
     MULLIGAN;
     AURA;
     DASH;
+    DIG;
 }
 
 // Effects
