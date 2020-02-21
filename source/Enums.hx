@@ -22,6 +22,9 @@ enum SpellName
     ALCHEMY;
     POWER;
     BRAVERY;
+    BOLT;
+    CROSS;
+    EX;
 }
 
 // Effects
