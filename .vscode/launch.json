@@ -1,19 +1,21 @@
 {
+	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "electron",
-			"request": "launch",
-			"name": "Kha: HTML5",
-			"appDir": "${workspaceFolder}/build/debug-html5",
-			"sourceMaps": true,
-			"preLaunchTask": "Kha: Build for Debug HTML5"
+			"name": "Build + Debug",
+			"type": "lime",
+			"request": "launch"
 		},
 		{
-			"type": "krom",
+			"name": "Debug",
+			"type": "lime",
 			"request": "launch",
-			"name": "Kha: Krom",
-			"preLaunchTask": "Kha: Build for Krom"
+			"preLaunchTask": null
+		},
+		{
+			"name": "Macro",
+			"type": "haxe-eval",
+			"request": "launch"
 		}
-	],
-	"compounds": []
+	]
 }
