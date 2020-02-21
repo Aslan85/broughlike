@@ -389,18 +389,30 @@ class Monster extends FlxSprite
         {
             spellBravery(callback);
         }
+        else if(spells[index] == SpellName.BOLT)
+        {
+            spellBolt(callback);
+        }
+        else if(spells[index] == SpellName.CROSS)
+        {
+            spellCross(callback);
+        }
+        else if(spells[index] == SpellName.EX)
+        {
+            spellEx(callback);
+        }
 
 
         spells.remove(spells[index]);
         _tile.level.playState.updateSpellsHud();
     }
 
-    function spellWoop(?callback:()->Void)
+    function spellWoop(?callback:()->Void):Void
     {
         move(_tile.level.randomPassableTile(), callback);
     }
 
-    function spellQuake(?callback:()->Void)
+    function spellQuake(?callback:()->Void):Void
     {
         for(x in _tile.level.tiles)
         {
@@ -419,7 +431,7 @@ class Monster extends FlxSprite
         FlxG.camera.shake(0.015, 0.2, callback);
     }
 
-    function spellMaelstrom(?callback:()->Void)
+    function spellMaelstrom(?callback:()->Void):Void
     {
         for(i in 0 ... _tile.level.monsters.length)
         {
@@ -430,7 +442,7 @@ class Monster extends FlxSprite
         }
     }
 
-    function spellMulligan(index:Int, ?callback:()->Void)
+    function spellMulligan(index:Int, ?callback:()->Void):Void
     {
         spells.remove(spells[index]);
         if(isPlayer)
@@ -441,7 +453,7 @@ class Monster extends FlxSprite
         _tile.level.playState.startLevel(hp);
     }
 
-    function spellAura(?callback:()->Void)
+    function spellAura(?callback:()->Void):Void
     {
         for(t in _tile.getAdjacentNeighbors())
         {
@@ -454,7 +466,7 @@ class Monster extends FlxSprite
         callback();
     }
 
-    function spellDash(?callback:()->Void)
+    function spellDash(?callback:()->Void):Void
     {
         var newTile = _tile;
         while(true)
@@ -490,7 +502,7 @@ class Monster extends FlxSprite
         }
     }
 
-    function spellDig(?callback:()->Void)
+    function spellDig(?callback:()->Void):Void
     {
         for(i in 1 ... _tile.level.tiles.length -1)
         {
@@ -508,7 +520,7 @@ class Monster extends FlxSprite
         callback();
     }
 
-    function spellKingmaker(?callback:()->Void)
+    function spellKingmaker(?callback:()->Void):Void
     {
         for(m in _tile.level.monsters)
         {
@@ -518,7 +530,7 @@ class Monster extends FlxSprite
         callback();
     }
 
-    function spellAlchemy(?callback:()->Void)
+    function spellAlchemy(?callback:()->Void):Void
     {
         for(t in _tile.getAdjacentNeighbors())
         {
@@ -531,16 +543,85 @@ class Monster extends FlxSprite
         callback();
     }
 
-    function spellPower(?callback:()->Void)
+    function spellPower(?callback:()->Void):Void
     {
         _bonusAttack = 5;
         callback();
     }
 
-    function spellBravery(?callback:()->Void)
+    function spellBravery(?callback:()->Void):Void
     {
         _shield = 2;
         callback();
+    }
+
+    function spellBolt(?callback:()->Void):Void
+    {
+        var effect = EffectName.hBoltEffect;
+        if(Math.abs(_lastMove.y) == 1)
+            effect = EffectName.vBoltEffect;
+
+        boltTravel(_lastMove, effect, 4);
+        callback();
+    }
+
+    function spellCross(?callback:()->Void):Void
+    {
+        var direction = [
+            [0, -1],
+            [0, 1],
+            [-1, 0],
+            [1, 0]
+        ];
+        for(i in 0 ... direction.length)
+        {
+            var effect = EffectName.hBoltEffect;
+            if(Math.abs(direction[i][1]) == 1)
+                effect = EffectName.vBoltEffect;
+
+            var dir:FlxPoint = new FlxPoint(direction[i][0], direction[i][1]);
+            boltTravel(dir, effect, 2);
+        }
+
+        callback();
+    }
+
+    function spellEx(?callback:()->Void):Void
+    {
+        var direction = [
+            [-1, -1],
+            [-1, 1],
+            [1, -1],
+            [1, 1]
+        ];
+        for(i in 0 ... direction.length)
+        {
+            var dir:FlxPoint = new FlxPoint(direction[i][0], direction[i][1]);
+            boltTravel(dir, EffectName.explosion, 2);
+        }
+        callback();
+    }
+
+    function boltTravel(direction:FlxPoint, effect:Enums.EffectName, damage:Int):Void
+    {
+        var newTile = _tile;
+        while(true)
+        {
+            var testTile = newTile.getNeighbor(Std.int(direction.x), Std.int(direction.y));
+            if(testTile.passable)
+            {
+                newTile = testTile;
+                if(newTile.monster != null)
+                {
+                    newTile.monster.hit(damage);
+                }
+                _tile.level.addEffect(effect, newTile, 30);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
     // } end region
